@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <var-def name="content">
+        <http url="${pageUrl}"/>
+    </var-def>
+    <var-def name="itemXPath">//table[@class='search-results']//tr</var-def>
+    <var-def name="nextXPath">//a[@class='b-pager__next']/@href</var-def>
+    <!-- collects all tables for individual users -->
+    <var-def name="cars">
+        <while condition="${now.toInt() != end.toInt()}">
+            <empty>
+                <var-def name="content">
+                    <html-to-xml>
+                        <http url="${pageUrl}${now}"/>
+                    </html-to-xml>
+                </var-def>
+                <var-def name="now">
+                    <template>${now.toInt() + 1}</template>
+                </var-def>
+            </empty>
+            <xpath expression="${itemXPath}">
+                <var name="content"/>
+            </xpath>
+        </while>
+    </var-def>
+
+
+    <var-def name="idXPath">//tr[@id]/@id</var-def>
+    <var-def name="priceXPath">//td[@class='price']/div[@class='p']/b/child::text()</var-def>
+    <var-def name="imgXPath">//td[@class='pic']/a/img/@src</var-def>
+    <var-def name="yearXPath">//td[@class='info']/span[@class='year']/child::text()</var-def>
+
+    <var-def name="modelXPath">//h4/a/child::text()</var-def>
+    <var-def name="retailerXPath">//ul/li/a[@class='url']/text()</var-def>
+    <var-def name="infoXPath">//ul/li[not(@*)]/text()</var-def>
+    <var-def name="dateLocXPath">//ul/li[@*]/text()</var-def>
+
+    <var-def name="count">0</var-def>
+
+    <var-def name="carsFormatted">
+        <loop index="i" item="car">
+            <list>
+                <var name="cars"/>
+            </list>
+            <body>
+                <var-def name="count">
+                    <var name="i"/>
+                </var-def>
+                <var-def name="price${i}">
+                    <xpath expression="${priceXPath}">
+                        <var name="car"/>
+                    </xpath>
+                </var-def>
+                <var-def name="img${i}">
+                    <xpath expression="${imgXPath}">
+                        <var name="car"/>
+                    </xpath>
+                </var-def>
+                <var-def name="year${i}">
+                    <xpath expression="${yearXPath}">
+                        <var name="car"/>
+                    </xpath>
+                </var-def>
+                <var-def name="model${i}">
+                    <xpath expression="${modelXPath}">
+                        <var name="car"/>
+                    </xpath>
+                </var-def>
+
+                <var-def name="info${i}">
+                    <xpath expression="${infoXPath}">
+                        <var name="car"/>
+                    </xpath>
+                </var-def>
+
+                <var-def name="retailer${i}">
+                    <xpath expression="${retailerXPath}">
+                        <var name="car"/>
+                    </xpath>
+                </var-def>
+                <var-def name="dateLoc${i}">
+                    <xpath expression="${dateLocXPath}">
+                        <var name="car"/>
+                    </xpath>
+                </var-def>
+                <var-def name="id${i}">
+                    <xpath expression="${idXPath}">
+                        <var name="car"/>
+                    </xpath>
+                </var-def>
+            </body>
+        </loop>
+    </var-def>
+</config>
