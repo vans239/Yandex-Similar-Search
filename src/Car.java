@@ -3,8 +3,6 @@ import java.io.IOException;
 import java.net.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.Jpeg;
 import com.itextpdf.text.Image;
 

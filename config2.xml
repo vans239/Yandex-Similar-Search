@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <include path="multi_page.xml"/>
+    <var-def name="searchEngine">avto</var-def>
+    <!-- & -> &amp; -->
+    <var-def name="content">
+        <http url="${pageUrl}"/>
+    </var-def>
+    <var-def name="itemXPath">//table[@class='search-results']//tr</var-def>
+    <var-def name="nextXPath">//a[@class='b-pager__next']/@href</var-def>
+    <!-- collects all tables for individual users -->
+    <var-def name="usersUrl">
+        <call name="download-multipage-list">
+            <call-param name="pageUrl">
+                <var name="pageUrl"/>
+            </call-param>
+            <call-param name="nextXPath">
+                <var name="nextXPath"/>
+            </call-param>
+            <call-param name="itemXPath">
+                <var name="itemXPath"/>
+            </call-param>
+            <call-param name="maxloops">
+                <var name="maxloops"/>
+            </call-param>
+        </call>
+    </var-def>
+    <file action="write" path="data/2.html">
+        <html-to-xml>
+            <http url="${pageUrl}"/>
+        </html-to-xml>
+    </file>
+    <file action="write" path="data/1.html">
+        <var name="maxloops"/>
+        <var name="pageUrl"/>
+    </file>
+    <var-def name="idXPath">//tr[@id]/@id</var-def>
+    <var-def name="priceXPath">//td[@class='price']/div[@class='p']/b/child::text()</var-def>
+    <var-def name="imgXPath">//td[@class='pic']/a/img/@src</var-def>
+    <var-def name="yearXPath">//td[@class='info']/span[@class='year']/child::text()</var-def>
+
+    <var-def name="modelXPath">//h4/a/child::text()</var-def>
+    <var-def name="retailerXPath">//ul/li/a[@class='url']/text()</var-def>
+    <var-def name="infoXPath">//ul/li[not(@*)]/text()</var-def>
+    <var-def name="dateLocXPath">//ul/li[@*]/text()</var-def>
+
+    <var-def name="count">0</var-def>
+
+    <var-def name="carsFormatted">
+        <loop index="i" item="userUrl">
+            <list>
+                <var name="usersUrl"/>
+            </list>
+            <body>
+                <var-def name="count">
+                    <var name="i"/>
+                </var-def>
+                <var-def name="price${i}">
+                    <xpath expression="${priceXPath}">
+                        <var name="userUrl"/>
+                    </xpath>
+                </var-def>
+                <var-def name="img${i}">
+                    <xpath expression="${imgXPath}">
+                        <var name="userUrl"/>
+                    </xpath>
+                </var-def>
+                <var-def name="year${i}">
+                    <xpath expression="${yearXPath}">
+                        <var name="userUrl"/>
+                    </xpath>
+                </var-def>
+                <var-def name="model${i}">
+                    <xpath expression="${modelXPath}">
+                        <var name="userUrl"/>
+                    </xpath>
+                </var-def>
+
+                <var-def name="info${i}">
+                    <xpath expression="${infoXPath}">
+                        <var name="userUrl"/>
+                    </xpath>
+                </var-def>
+
+                <var-def name="retailer${i}">
+                    <xpath expression="${retailerXPath}">
+                        <var name="userUrl"/>
+                    </xpath>
+                </var-def>
+                <var-def name="dateLoc${i}">
+                    <xpath expression="${dateLocXPath}">
+                        <var name="userUrl"/>
+                    </xpath>
+                </var-def>
+                <var-def name="id${i}">
+                    <xpath expression="${idXPath}">
+                        <var name="userUrl"/>
+                    </xpath>
+                </var-def>
+            </body>
+        </loop>
+    </var-def>
+    <file action="write" path="data/content.html">
+        <var name="carsFormatted"/>
+
+    </file>
+</config>
