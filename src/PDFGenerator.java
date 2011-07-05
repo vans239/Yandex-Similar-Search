@@ -69,7 +69,10 @@ public class PDFGenerator {
 		p.add(new Chunk(car.engineCap + "", NORMAL));
 		p.add(new Chunk("\nInfo: ", BOLD));
 		p.add(new Chunk(car.info, NORMAL));
-
+		p.add(new Chunk("\nDate: ", BOLD));
+		p.add(new Chunk(car.date, NORMAL));
+		p.add(new Chunk("\nCity: ", BOLD));
+		p.add(new Chunk(car.city, NORMAL));
 		return p;
 	}
 }

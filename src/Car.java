@@ -16,27 +16,29 @@ public class Car {
 	String info;
 	String img;
 	String retailer;
-	String dateLoc;
+	String city;
+	String date;
 
 	String colour = null;
-	String data = null;
 	Image image = null;
-	Car(String id, String model, String year, String price, String img, String retailer, String dateLoc, String info){
+	Car(String id, String model, int year, int price, String img, String retailer,
+		String info, Double engineCap, Integer mileage, String city, String date){
 		this.id = id;
-		this.model = deleteBadSymbols(model);
-		this.year = toInt(year);
-		this.price = toInt(price);
+		this.model = model;
+		this.year = year;
+		this.price = price;
 		this.img = img;
-		this.retailer = deleteBadSymbols(retailer);
-		this.dateLoc = deleteBadSymbols(dateLoc);
-		this.info = deleteBadSymbols(info);
-		this.mileage = getMileageFromInfo();
-		this.engineCap = getEngineCap();
+		this.retailer = retailer;
+		this.info = info;
+		this.mileage = mileage;
+		this.engineCap = engineCap;
+		this.city = city;
+		this.date = date;
 		if(img != null)
 			this.downloadImage();
 	}
 	public boolean isSimilar(Car car){
-		if(this.year != car.year || !isModelSimilar(car) || !isEngineCapSimilar(car) )
+		if(this.year != car.year || !isModelSimilar(car) || !isEngineCapSimilar(car) || !this.city.equals(car.city) )
 			return false;
 
 		if(isImgSimilar(car)){
@@ -76,39 +78,14 @@ public class Car {
 		str.append('\n');
 		str.append(info);
 		str.append('\n');
-		str.append(dateLoc);
+		str.append(city);
+		str.append('\n');
+		str.append(date);
 		str.append('\n');
 		return str.toString();
 	}
-	static private int toInt(String str){
-		String digits = str.replaceAll("\\D", "");
-		return Integer.valueOf(digits);
-	}
-	static private String deleteBadSymbols(String str){
-		String ans = str.replaceAll("\n", " ");
-		ans = ans.replaceAll("( )+", " ");
 
-		return ans;
-	}
-	private Integer getMileageFromInfo(){
-		Pattern pattern = Pattern.compile("(\\d)+ км");
-		Matcher matcher = pattern.matcher(info);
-		if(matcher.find()){
-			String mileage = matcher.group();
-			return toInt(mileage);
-		}
-		return null;
-	}
-	private Double getEngineCap(){
-		Pattern pattern = Pattern.compile("(\\d)+(\\.)*(\\d)* л");
-		Matcher matcher = pattern.matcher(info);
-		if(matcher.find()){
-			String engineCapStr = matcher.group();
-			String digits = engineCapStr.replaceAll(" [^0-9.]", "");
-			return Double.parseDouble(digits);
-		}
-		return null;
-	}
+
 	private void downloadImage(){
 		try{
     		image = new Jpeg(new URL(img));
