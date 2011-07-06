@@ -1,9 +1,18 @@
+import java.rmi.server.ExportException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.regex.*;
 import java.util.Calendar;
+import java.text.DateFormatSymbols;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+import java.util.GregorianCalendar;
+
 import org.webharvest.definition.ScraperConfiguration;
 import org.webharvest.runtime.Scraper;
 import org.webharvest.runtime.variables.Variable;
+
+
 
 public class CarScraper {
 	public static String url = "http://auto.yandex.ru/search.xml?cluster_id=";
@@ -25,7 +34,7 @@ public class CarScraper {
 				new ScraperConfiguration(this.config);
 		Scraper scraper = new Scraper(config, workDir);
 		scraper.setDebug(true);
-		if(proxy != null)
+		if (proxy != null)
 			scraper.getHttpClientManager().setHttpProxy(proxy, 80);
 		scraper.addVariableToContext("now", begin);
 		scraper.addVariableToContext("end", end);
@@ -53,10 +62,11 @@ public class CarScraper {
 			Integer mileage = getMileageFromInfo(info);
 			Double engineCap = getEngineCap(info);
 
-			dateLoc = dateLoc.replace(",", "");
+			dateLoc = dateLoc.replaceAll(",", "");
+			dateLoc = dateLoc.replaceAll("['\\u00A0''\\u2007''\\u202F']", " ");
 			int index = dateLoc.indexOf(' ');
 			String city = dateLoc.substring(0, index);
-			String date = dateLoc.substring(index + 1);
+			Date date = getDate(dateLoc.substring(index + 1));
 			if (!isImgUrlValid(img))
 				img = null;
 			cars.add(new Car(id, model, year, price, img, retailer, info, engineCap, mileage, city, date));
@@ -65,27 +75,30 @@ public class CarScraper {
 	}
 
 	private static boolean isImgUrlValid(String img) {
-		if (img.length() < 1 || img.charAt(0) == '/')
-			return false;
-		return true;
+	//	boolean a = img.length() < 1;
+	//	boolean b = img.charAt(0) == '/';
+		return (img != null && img.length() >= 1 && img.charAt(0) != '/');
 	}
-	static private int toInt(String str){
+
+	static private int toInt(String str) {
 		String digits = str.replaceAll("\\D", "");
 		return Integer.valueOf(digits);
 	}
-	private Integer getMileageFromInfo(String info){
+
+	private static Integer getMileageFromInfo(String info) {
 		Pattern pattern = Pattern.compile("(\\d)+ км");
 		Matcher matcher = pattern.matcher(info);
-		if(matcher.find()){
+		if (matcher.find()) {
 			String mileage = matcher.group();
 			return toInt(mileage);
 		}
 		return null;
 	}
-	private Double getEngineCap(String info){
+
+	private static Double getEngineCap(String info) {
 		Pattern pattern = Pattern.compile("(\\d)+(\\.)*(\\d)* л");
 		Matcher matcher = pattern.matcher(info);
-		if(matcher.find()){
+		if (matcher.find()) {
 			String engineCapStr = matcher.group();
 			String digits = engineCapStr.replaceAll(" [^0-9.]", "");
 			return Double.parseDouble(digits);
@@ -93,12 +106,54 @@ public class CarScraper {
 		return null;
 	}
 
-	static private String deleteBadSymbols(String str){
+	private static Date getDate(String dateStr) {
+		if(dateStr == null)
+			return null;
+		dateStr = dateStr.replaceAll("( )+$", "");
+		if(dateStr.equals("сегодня")){
+			return new Date();
+		}
+		GregorianCalendar calendar = new GregorianCalendar();
+		if(dateStr.equals("вчера")){
+			calendar.add(Calendar.DATE, -1);
+			return calendar.getTime();
+		}
+
+		String[] russianMonth =
+				{
+						"января",
+						"февраля",
+						"марта",
+						"апреля",
+						"мая",
+						"июня",
+						"июля",
+						"августа",
+						"сентября",
+						"октября",
+						"ноября",
+						"декабря"
+				};
+		Locale local = new Locale("ru", "RU");
+		DateFormatSymbols russSymbol = new DateFormatSymbols(local);
+		russSymbol.setMonths(russianMonth);
+		SimpleDateFormat sdf = new SimpleDateFormat("d MMMMM yyyy", russSymbol);
+
+		Date date = null;
+		try{
+			date = sdf.parse(dateStr + " " + calendar.get(Calendar.YEAR));
+		} catch(Exception exp){
+			exp.printStackTrace();
+		}
+		return date;
+	}
+
+	static private String deleteBadSymbols(String str) {
 		String ans = str.replaceAll("\n", " ");
 		ans = ans.replaceAll("( )+", " ");
-
 		return ans;
 	}
+
 	public static void main(String argv[]) throws Exception {
 		// begin and end of index of searched pages
 		int begin = 77221319;
@@ -125,7 +180,8 @@ public class CarScraper {
 		PDFGenerator cp = new PDFGenerator();
 		cp.createPdf("content.pdf", cars, ds);
 
-
-		return;
+		//String dateStr = "3 июня             ";
+		//dateStr = dateStr.replaceAll("( )*$", "");
+		//System.out.println(dateStr + "x");
 	}
 }

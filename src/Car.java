@@ -1,11 +1,9 @@
 
-import java.io.IOException;
 import java.net.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.*;
+
 import com.itextpdf.text.Jpeg;
 import com.itextpdf.text.Image;
-
 public class Car {
 	String id;
 	String model;
@@ -17,12 +15,12 @@ public class Car {
 	String img;
 	String retailer;
 	String city;
-	String date;
+	Date date;
 
 	String colour = null;
 	Image image = null;
 	Car(String id, String model, int year, int price, String img, String retailer,
-		String info, Double engineCap, Integer mileage, String city, String date){
+		String info, Double engineCap, Integer mileage, String city, Date date){
 		this.id = id;
 		this.model = model;
 		this.year = year;
@@ -38,7 +36,8 @@ public class Car {
 			this.downloadImage();
 	}
 	public boolean isSimilar(Car car){
-		if(this.year != car.year || !isModelSimilar(car) || !isEngineCapSimilar(car) || !this.city.equals(car.city) )
+		if(this.year != car.year || !isModelSimilar(car) || !isEngineCapSimilar(car) || !this.city.equals(car.city)
+				|| !isDateSimilar(car))
 			return false;
 
 		if(isImgSimilar(car)){
@@ -53,6 +52,13 @@ public class Car {
 			return true;
 		//opencv will be here))
 		return false;
+	}
+	private boolean isDateSimilar(Car car){
+		if(this.date == null || car.date == null)
+			return true;
+		long diff = this.date.getTime() - car.date.getTime();
+		final long day = 24 * 60 * 60 * 1000;
+		return diff < 2 * day;
 	}
 	private boolean isModelSimilar(Car car){
 		// may be Levenshtein  distance  will be better

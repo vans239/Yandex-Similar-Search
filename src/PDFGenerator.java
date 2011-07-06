@@ -63,14 +63,20 @@ public class PDFGenerator {
 		p.add(new Chunk(car.year + "", NORMAL));
 		p.add(new Chunk("\nPrice: ", BOLD));
 		p.add(new Chunk(car.price + "", NORMAL));
-		p.add(new Chunk("\nMileage: ", BOLD));
-		p.add(new Chunk(car.mileage + "", NORMAL));
-		p.add(new Chunk("\nEngine capacity: ", BOLD));
-		p.add(new Chunk(car.engineCap + "", NORMAL));
+		if(car.mileage != null){
+			p.add(new Chunk("\nMileage: ", BOLD));
+			p.add(new Chunk(car.mileage.toString(), NORMAL));
+		}
+		if(car.engineCap != null){
+			p.add(new Chunk("\nEngine capacity: ", BOLD));
+			p.add(new Chunk(car.engineCap.toString(), NORMAL));
+		}
 		p.add(new Chunk("\nInfo: ", BOLD));
 		p.add(new Chunk(car.info, NORMAL));
-		p.add(new Chunk("\nDate: ", BOLD));
-		p.add(new Chunk(car.date, NORMAL));
+		if(car.date != null){
+			p.add(new Chunk("\nDate: ", BOLD));
+			p.add(new Chunk(car.date.toString(), NORMAL));
+		}
 		p.add(new Chunk("\nCity: ", BOLD));
 		p.add(new Chunk(car.city, NORMAL));
 		return p;
