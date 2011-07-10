@@ -5,8 +5,10 @@ import java.util.Random;
 public class DisjointSets {
 	private static Random random = new Random();
 	List<Integer> similars[];
+	int unique;
 	int[] p;
 	public DisjointSets(int size) {
+		unique = size;
 		p = new int[size];
 		similars = new ArrayList[size];
 		for(int i = 0; i < size; ++i){
@@ -25,13 +27,10 @@ public class DisjointSets {
 	public void unite(int a, int b) {
 		a = root(a);
 		b = root(b);
-/*		if (random.nextInt() % 2 == 1) {
-			p[a] = b;
-		} else {
-			p[b] = a;
-		}*/
-		similars[a].addAll(similars[b]);
-
-		similars[b].clear();
+		if(a != b){
+			similars[a].addAll(similars[b]);
+			similars[b].clear();
+			--unique;
+		}
 	}
 }
