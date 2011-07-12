@@ -32,8 +32,8 @@ public class Car {
 		this.engineCap = engineCap;
 		this.city = city;
 		this.date = date;
-		if(img != null)
-			this.downloadImage();
+		//if(img != null)
+		//	this.downloadImage();
 	}
 	public boolean isSimilar(Car car){
 		if(this.year != car.year || !isModelSimilar(car) || !isEngineCapSimilar(car) || !this.city.equals(car.city)
