@@ -7,7 +7,7 @@ public class Main {
 	public static void main(String argv[]) throws Exception {
 		// begin  index of searched pages and count of cars
 		ApplicationContext ctx =
-                        new FileSystemXmlApplicationContext("spring.xml");
+				new FileSystemXmlApplicationContext("spring.xml");
 
 /*		int begin = 77221319;
 
@@ -24,17 +24,17 @@ public class Main {
 		DisjointSets ds = new DisjointSets(cars.size());
 		for (int i = 0; i < cars.size(); ++i) {
 			Car c1 = cars.get(i);
-			for(int j = i + 1; j < cars.size(); ++j){
+			for (int j = i + 1; j < cars.size(); ++j) {
 				Car c2 = cars.get(j);
-				if(c1.isSimilar(c2)){
-					ds.unite( i, j);
-					System.out.println(c1.id + " " + c2.id);
+				if (c1.isSimilar(c2)) {
+					ds.unite(i, j);
+					System.out.println(c1.carYandexId + " " + c2.carYandexId);
 				}
 			}
 		}
 
 		WriterCar writer = (WriterCar) ctx.getBean("writerCar");
-		writer.create( cars, ds);
+		writer.create(cars, ds);
 	}
 }
 //disjoints vs spring ??

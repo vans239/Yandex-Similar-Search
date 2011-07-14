@@ -1,3 +1,4 @@
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.regex.*;
@@ -7,18 +8,20 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.GregorianCalendar;
 
+import com.itextpdf.text.Image;
+import com.itextpdf.text.Jpeg;
 import org.webharvest.definition.ScraperConfiguration;
 import org.webharvest.runtime.Scraper;
 import org.webharvest.runtime.variables.Variable;
 
 
-
-public class CarScraperYandex implements CarScraper{
+public class CarScraperYandex implements CarScraper {
 	public static String url = "http://auto.yandex.ru/search.xml?cluster_id=";
 	private String config;
 	private String workDir;
 	private String proxy;
 	private int begin;
+
 	public CarScraperYandex(String config, String workDir, String proxy, int begin) {
 		this.config = config;
 		this.workDir = workDir;
@@ -47,7 +50,7 @@ public class CarScraperYandex implements CarScraper{
 		int countScrapedCars = ((Variable) scraper.getContext().get("count")).toInt();
 		for (Integer i = 1; i <= countScrapedCars; ++i) {
 			String priceStr = scraper.getContext().get("price" + i.toString()).toString();
-			String id = scraper.getContext().get("id" + i.toString()).toString();
+			String id = scraper.getContext().get("carYandexId" + i.toString()).toString();
 			String img = scraper.getContext().get("img" + i.toString()).toString();
 			String retailer = scraper.getContext().get("retailer" + i.toString()).toString();
 			String yearStr = scraper.getContext().get("year" + i.toString()).toString();
@@ -72,18 +75,19 @@ public class CarScraperYandex implements CarScraper{
 			Date date = getDate(dateLoc.substring(index + 1));
 			if (!isImgUrlValid(img))
 				img = null;
-			cars.add(new Car(id, model, year, price, img, retailer, info, engineCap, mileage, city, date));
+			Image image = downloadImage(img);
+			cars.add(new Car(id, model, year, price, img, retailer, info, engineCap, mileage, city, date, image));
 		}
 		return cars;
 	}
 
 	private static boolean isImgUrlValid(String img) {
-	//	boolean a = img.length() < 1;
-	//	boolean b = img.charAt(0) == '/';
+		//	boolean a = img.length() < 1;
+		//	boolean b = img.charAt(0) == '/';
 		return (img != null && img.length() >= 1 && img.charAt(0) != '/');
 	}
 
-	private static  int toInt(String str) {
+	private static int toInt(String str) {
 		String digits = str.replaceAll("\\D", "");
 		return Integer.valueOf(digits);
 	}
@@ -110,14 +114,14 @@ public class CarScraperYandex implements CarScraper{
 	}
 
 	private static Date getDate(String dateStr) {
-		if(dateStr == null)
+		if (dateStr == null)
 			return null;
 		dateStr = dateStr.replaceAll("( )+$", "");
-		if(dateStr.equals("сегодня")){
+		if (dateStr.equals("сегодня")) {
 			return new Date();
 		}
 		GregorianCalendar calendar = new GregorianCalendar();
-		if(dateStr.equals("вчера")){
+		if (dateStr.equals("вчера")) {
 			calendar.add(Calendar.DATE, -1);
 			return calendar.getTime();
 		}
@@ -143,15 +147,25 @@ public class CarScraperYandex implements CarScraper{
 		SimpleDateFormat sdf = new SimpleDateFormat("d MMMMM yyyy", russSymbol);
 
 		Date date = null;
-		try{
+		try {
 			date = sdf.parse(dateStr + " " + calendar.get(Calendar.YEAR));
-		} catch(Exception exp){
+		} catch (Exception exp) {
 			exp.printStackTrace();
 		}
 		return date;
 	}
 
-	static private String deleteBadSymbols(String str) {
+	private static Image downloadImage(String imgUrl) {
+		Image image = null;
+		try {
+			image = new Jpeg(new URL(imgUrl));
+		} catch (Exception exp) {
+			exp.printStackTrace();
+		}
+		return image;
+	}
+
+	private static String deleteBadSymbols(String str) {
 		String ans = str.replaceAll("\n", " ");
 		ans = ans.replaceAll("( )+", " ");
 		return ans;
