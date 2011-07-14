@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Properties;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
@@ -10,16 +11,26 @@ public class Main {
 				new FileSystemXmlApplicationContext("spring.xml");
 
 /*		int begin = 77221319;
-
 		String proxy = "200.68.43.235";
 		String config = "config.xml";
 		String workDir = "C:\\My Dropbox\\programms\\Java\\YaSimilarSearch";*/
-
-		int count = 2;
 		//CarScraper cs = new CarScraperYandex(config, workDir, proxy, begin);
+
+		String url = "jdbc:mysql://localhost:3306/test";
+		String driver = "com.mysql.jdbc.Driver";
+		String user = "vans239";
+		String password = "qwerty";
+		Properties properties = new Properties();
+		properties.setProperty("user", user);
+		properties.setProperty("password", password);
+		properties.setProperty("useUnicode", "true");
+		properties.setProperty("characterEncoding", "UTF-8");
+		Database db = new Database(driver, url, properties);
+		db.clearTable();
+		int count = 2;
 		CarScraper cs = (CarScraper) ctx.getBean("carScraper");
 
-		ArrayList<Car> cars = cs.scrape(count);
+		ArrayList<Car> cars = cs.scrape(count, db);
 
 		DisjointSets ds = new DisjointSets(cars.size());
 		for (int i = 0; i < cars.size(); ++i) {
@@ -32,9 +43,9 @@ public class Main {
 				}
 			}
 		}
-
 		WriterCar writer = (WriterCar) ctx.getBean("writerCar");
 		writer.create(cars, ds);
+		db.print();
 	}
 }
 //disjoints vs spring ??

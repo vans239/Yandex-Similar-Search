@@ -1,7 +1,30 @@
 import java.sql.*;
+import java.util.Properties;
 
 public class Database {
-	static Car getCar(ResultSet rs) throws SQLException {
+	private Statement statement;
+	//private ResultSet rs;
+
+	Database(String driver, String url, Properties properties) throws SQLException, ClassNotFoundException, IllegalAccessException, InstantiationException {
+		Connection con;
+		Class.forName(driver).newInstance();
+		con = DriverManager.getConnection(url, properties);
+		if (!con.isClosed())
+			System.out.println("Successfully connected to MySQL server using TCP/IP...");
+		statement = con.createStatement(java.sql.ResultSet.TYPE_FORWARD_ONLY,
+				java.sql.ResultSet.CONCUR_UPDATABLE);
+
+	}
+
+	void print() throws SQLException {
+		ResultSet rs = statement.executeQuery("SELECT * FROM Car");
+		while (rs.next()) {
+			Car car = getCar(rs);
+			System.out.println(car);
+		}
+	}
+
+	Car getCar(ResultSet rs) throws SQLException {
 		int carId = rs.getInt("carId");
 		String model = rs.getString("model");
 		int year = rs.getInt("year");
@@ -33,7 +56,8 @@ public class Database {
 		return new Car(carYandexId, model, year, price, imgUrl, retailer, info, engineCap, mileage, city, date, null);
 	}
 
-	static void addCar(ResultSet rs, Car car) throws SQLException {
+	void addCar(Car car) throws SQLException {
+		ResultSet rs = statement.executeQuery("SELECT * FROM Car");
 		rs.moveToInsertRow();
 		if (car.carYandexId != null)
 			rs.updateString("carYandexId", car.carYandexId);
@@ -53,38 +77,15 @@ public class Database {
 			rs.updateString("info", car.info);
 		if (car.city != null)
 			rs.updateString("city", car.city);
-		//rs.updateDate("dateSale", car.date);
+		System.out.println(car.date.toString());
+		//rs.updateDate("date", Date.valueOf(car.date.toString()));
 		rs.insertRow();
+		rs.close();
 	}
 
-	static void clearTable(Statement stmnt) throws SQLException {
-
-		stmnt.execute("DELETE FROM Car;");
+	public void clearTable() throws SQLException {
+		statement.execute("DELETE FROM Car;");
 	}
 
-	public static void main(String argv[]) {
-		Connection con;
-		try {
-			Class.forName("com.mysql.jdbc.Driver").newInstance();
-			String url = "jdbc:mysql://localhost:3306/test";
-			con = DriverManager.getConnection(url, "vans239", "qwerty");
-			if (!con.isClosed())
-				System.out.println("Successfully connected to MySQL server using TCP/IP...");
-			Statement statement = con.createStatement(java.sql.ResultSet.TYPE_FORWARD_ONLY,
-					java.sql.ResultSet.CONCUR_UPDATABLE);
 
-			ResultSet rs = statement.executeQuery("SELECT * FROM Car");
-			while (rs.next()) {
-				Car car = getCar(rs);
-				System.out.println(car);
-			}
-			//addCar(rs, new Car( "wrrwwwer", "qwer", 0, 0, null, null, null, null, null, null, null, null));
-			clearTable(statement);
-			statement.close();
-			con.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("Exception: " + e.getMessage());
-		}
-	}
 }

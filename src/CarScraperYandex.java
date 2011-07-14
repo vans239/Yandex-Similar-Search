@@ -29,7 +29,7 @@ public class CarScraperYandex implements CarScraper {
 		this.begin = begin;
 	}
 
-	public ArrayList<Car> scrape(int count) throws Exception {
+	public ArrayList<Car> scrape(int count, Database db) throws Exception {
 		int end = begin + count;
 		if (begin <= 0 || begin >= end) {
 			throw new Exception("Wrong begin or end");
@@ -50,7 +50,7 @@ public class CarScraperYandex implements CarScraper {
 		int countScrapedCars = ((Variable) scraper.getContext().get("count")).toInt();
 		for (Integer i = 1; i <= countScrapedCars; ++i) {
 			String priceStr = scraper.getContext().get("price" + i.toString()).toString();
-			String id = scraper.getContext().get("carYandexId" + i.toString()).toString();
+			String id = scraper.getContext().get("id" + i.toString()).toString();
 			String img = scraper.getContext().get("img" + i.toString()).toString();
 			String retailer = scraper.getContext().get("retailer" + i.toString()).toString();
 			String yearStr = scraper.getContext().get("year" + i.toString()).toString();
@@ -76,7 +76,9 @@ public class CarScraperYandex implements CarScraper {
 			if (!isImgUrlValid(img))
 				img = null;
 			Image image = downloadImage(img);
-			cars.add(new Car(id, model, year, price, img, retailer, info, engineCap, mileage, city, date, image));
+			Car car = new Car(id, model, year, price, img, retailer, info, engineCap, mileage, city, date, image);
+			cars.add(car);
+			db.addCar(car);
 		}
 		return cars;
 	}

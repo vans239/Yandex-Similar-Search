@@ -8,23 +8,27 @@ import java.util.List;
 
 public class PDFWriterCar implements WriterCar {
 	private final static String FONT_LOCATION = "ARIAL.ttf";
-	private BaseFont baseFont;
+
 	private Font NORMAL;
 	private Font BOLD;
 	private String filename;
+
 	PDFWriterCar() throws IOException, DocumentException {
-		baseFont = BaseFont.createFont(FONT_LOCATION,
+		BaseFont baseFont = BaseFont.createFont(FONT_LOCATION,
 				BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 		NORMAL = new Font(baseFont);
 		BOLD = new Font(baseFont, Font.DEFAULTSIZE, Font.BOLD);
 		filename = "content.pdf";
 	}
-	public void setFilename(String filename){
+
+	public void setFilename(String filename) {
 		this.filename = filename;
 	}
-	public String getFilename(String filename){
+
+	public String getFilename(String filename) {
 		return filename;
 	}
+
 	public void create(ArrayList<Car> cars, DisjointSets ds)
 			throws DocumentException, IOException {
 		Document document = new Document();
@@ -36,7 +40,7 @@ public class PDFWriterCar implements WriterCar {
 
 		for (int i = 0; i < cars.size(); ++i) {
 			List<Integer> list = ds.similars[i];
-			if(list.size() > 0){
+			if (list.size() > 0) {
 				document.add(new LineSeparator(0.5f, 100, null, 0, -5));
 				document.add(new Paragraph("Same: \n"));
 			}
@@ -51,7 +55,7 @@ public class PDFWriterCar implements WriterCar {
 		Paragraph p = new Paragraph();
 		p.add(car.image);
 		p.add(new Chunk("Id: ", BOLD));
-		p.add(new Chunk(car.id, NORMAL));
+		p.add(new Chunk(car.carYandexId, NORMAL));
 		p.add(new Chunk("\nModel: ", BOLD));
 		p.add(new Chunk(car.model, NORMAL));
 		p.add(new Chunk("\nRetailer: ", BOLD));
@@ -60,17 +64,17 @@ public class PDFWriterCar implements WriterCar {
 		p.add(new Chunk(car.year + "", NORMAL));
 		p.add(new Chunk("\nPrice: ", BOLD));
 		p.add(new Chunk(car.price + "", NORMAL));
-		if(car.mileage != null){
+		if (car.mileage != null) {
 			p.add(new Chunk("\nMileage: ", BOLD));
 			p.add(new Chunk(car.mileage.toString(), NORMAL));
 		}
-		if(car.engineCap != null){
+		if (car.engineCap != null) {
 			p.add(new Chunk("\nEngine capacity: ", BOLD));
 			p.add(new Chunk(car.engineCap.toString(), NORMAL));
 		}
 		p.add(new Chunk("\nInfo: ", BOLD));
 		p.add(new Chunk(car.info, NORMAL));
-		if(car.date != null){
+		if (car.date != null) {
 			p.add(new Chunk("\nDate: ", BOLD));
 			p.add(new Chunk(car.date.toString(), NORMAL));
 		}
