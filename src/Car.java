@@ -1,7 +1,5 @@
-import java.net.*;
-import java.util.*;
+import java.util.Date;
 
-import com.itextpdf.text.Jpeg;
 import com.itextpdf.text.Image;
 
 public class Car {
@@ -16,10 +14,9 @@ public class Car {
 	String retailer;
 	String city;
 	Date date;
-	String similarCar;
+	Image image;
 
 	String colour = null;
-	Image image = null;
 
 	public Car(String carYandexId, String model, int year, int price, String imgUrl, String retailer,
 			   String info, Double engineCap, Integer mileage, String city, Date date, Image image) {
@@ -35,8 +32,6 @@ public class Car {
 		this.city = city;
 		this.date = date;
 		this.image = image;
-		//if(img != null)
-		//	this.downloadImage();
 	}
 
 	public boolean isSimilar(Car car) {

@@ -1,19 +1,19 @@
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.regex.*;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 import java.util.Calendar;
-import java.text.DateFormatSymbols;
-import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.GregorianCalendar;
+import java.text.DateFormatSymbols;
+import java.text.SimpleDateFormat;
 
-import com.itextpdf.text.Image;
-import com.itextpdf.text.Jpeg;
 import org.webharvest.definition.ScraperConfiguration;
 import org.webharvest.runtime.Scraper;
 import org.webharvest.runtime.variables.Variable;
 
+import com.itextpdf.text.Image;
+import com.itextpdf.text.Jpeg;
 
 public class CarScraperYandex implements CarScraper {
 	public static String url = "http://auto.yandex.ru/search.xml?cluster_id=";

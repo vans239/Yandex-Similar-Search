@@ -1,7 +1,14 @@
-import java.sql.*;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 import java.util.Date;
+import java.util.Map;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 public class Database implements Iterable<Car> {
 	private Connection con;
@@ -52,7 +59,8 @@ public class Database implements Iterable<Car> {
 		//	rs.updateObject("image", car.image);
 		//}
 		System.out.println(car.date.toString());
-		//rs.updateDate("date", Date.valueOf(car.date.toString()));
+		if (car.date != null)
+			rs.updateDate("date", new java.sql.Date(car.date.getTime()));
 		rs.insertRow();
 		rs.close();
 		statement.close();
@@ -76,12 +84,16 @@ public class Database implements Iterable<Car> {
 		statement.close();
 	}
 
-	public void setSimilarCar(String carYandexId, String carSimilarYandexId) throws SQLException {
-		Statement statement = con.createStatement(java.sql.ResultSet.TYPE_FORWARD_ONLY,
-				java.sql.ResultSet.CONCUR_UPDATABLE);
-		String sqlRequest = "UPDATE Car SET similarCar = '" + carSimilarYandexId +
-				"' WHERE (carYandexId = '" + carYandexId + "' OR similarCar = '" + carYandexId + "');";
-		statement.execute(sqlRequest);
+	public void setSimilars(DisjointSets ds, Map<String, Integer> map) throws SQLException {
+		for (Iterator<Car> it = iterator(); it.hasNext(); ) {
+			Car car = it.next();
+			int i = map.get(car.carYandexId);
+			List<Integer> list = ds.similars[i];
+			for (Integer j : list) {
+				String carYandexId = Util.getKeyByValue(map, j);
+				setSimilarCar(carYandexId, car.carYandexId);
+			}
+		}
 	}
 
 	public Car getCarByYandexId(String carYandexId) throws SQLException {
@@ -125,5 +137,11 @@ public class Database implements Iterable<Car> {
 		return new Car(carYandexId, model, year, price, imgUrl, retailer, info, engineCap, mileage, city, date, null);
 	}
 
-
+	private void setSimilarCar(String carYandexId, String carSimilarYandexId) throws SQLException {
+		Statement statement = con.createStatement(java.sql.ResultSet.TYPE_FORWARD_ONLY,
+				java.sql.ResultSet.CONCUR_UPDATABLE);
+		String sqlRequest = "UPDATE Car SET similarCarYandexId = '" + carSimilarYandexId +
+				"' WHERE (carYandexId = '" + carYandexId + "');";
+		statement.execute(sqlRequest);
+	}
 }

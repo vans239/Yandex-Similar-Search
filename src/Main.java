@@ -1,4 +1,7 @@
-import java.util.*;
+import java.util.Properties;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
@@ -20,11 +23,11 @@ public class Main {
 		properties.setProperty("characterEncoding", "UTF-8");
 		Database db = new Database(driver, url, properties);
 
-		//db.clearTable();
+		db.clearTable();
 
-		//int count = 15;
-		//CarScraper cs = (CarScraper) ctx.getBean("carScraper");
-		//cs.scrape(count, db);
+		int count = 150;
+		CarScraper cs = (CarScraper) ctx.getBean("carScraper");
+		cs.scrape(count, db);
 
 		int size = db.size();
 
@@ -43,16 +46,15 @@ public class Main {
 			Car car1 = (Car) it1.next();
 			for (Iterator<Car> it2 = db.iterator(); it2.hasNext(); ) {
 				Car car2 = it2.next();
-				if (car1.isSimilar(car2)) {
+				if (!car1.carYandexId.equals(car2.carYandexId) && car1.isSimilar(car2)) {
 					int dsNumber1 = map.get(car1.carYandexId);
 					int dsNumber2 = map.get(car2.carYandexId);
 					ds.unite(dsNumber1, dsNumber2);
-					db.setSimilarCar(car1.carYandexId, car2.carYandexId);
 					System.out.println(car1.carYandexId + " " + car2.carYandexId);
 				}
 			}
 		}
-
+		db.setSimilars(ds, map);
 		WriterCar writer = (WriterCar) ctx.getBean("writerCar");
 		writer.create(db, ds, map);
 	}
