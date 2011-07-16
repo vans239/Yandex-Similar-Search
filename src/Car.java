@@ -16,12 +16,13 @@ public class Car {
 	String retailer;
 	String city;
 	Date date;
+	String similarCar;
 
 	String colour = null;
 	Image image = null;
 
-	Car(String carYandexId, String model, int year, int price, String imgUrl, String retailer,
-		String info, Double engineCap, Integer mileage, String city, Date date, Image image) {
+	public Car(String carYandexId, String model, int year, int price, String imgUrl, String retailer,
+			   String info, Double engineCap, Integer mileage, String city, Date date, Image image) {
 		this.carYandexId = carYandexId;
 		this.model = model;
 		this.year = year;
@@ -33,6 +34,7 @@ public class Car {
 		this.engineCap = engineCap;
 		this.city = city;
 		this.date = date;
+		this.image = image;
 		//if(img != null)
 		//	this.downloadImage();
 	}

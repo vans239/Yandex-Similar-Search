@@ -29,12 +29,11 @@ public class CarScraperYandex implements CarScraper {
 		this.begin = begin;
 	}
 
-	public ArrayList<Car> scrape(int count, Database db) throws Exception {
+	public void scrape(int count, Database db) throws Exception {
 		int end = begin + count;
 		if (begin <= 0 || begin >= end) {
 			throw new Exception("Wrong begin or end");
 		}
-		ArrayList<Car> cars = new ArrayList<Car>();
 
 		ScraperConfiguration config =
 				new ScraperConfiguration(this.config);
@@ -49,44 +48,52 @@ public class CarScraperYandex implements CarScraper {
 
 		int countScrapedCars = ((Variable) scraper.getContext().get("count")).toInt();
 		for (Integer i = 1; i <= countScrapedCars; ++i) {
-			String priceStr = scraper.getContext().get("price" + i.toString()).toString();
-			String id = scraper.getContext().get("id" + i.toString()).toString();
-			String img = scraper.getContext().get("img" + i.toString()).toString();
-			String retailer = scraper.getContext().get("retailer" + i.toString()).toString();
-			String yearStr = scraper.getContext().get("year" + i.toString()).toString();
-			String modelStr = scraper.getContext().get("model" + i.toString()).toString();
-			String info = scraper.getContext().get("info" + i.toString()).toString();
-			String dateLoc = scraper.getContext().get("dateLoc" + i.toString()).toString();
 
-			String model = deleteBadSymbols(modelStr);
-			int year = toInt(yearStr);
-			int price = toInt(priceStr);
-			retailer = deleteBadSymbols(retailer);
-			dateLoc = deleteBadSymbols(dateLoc);
+			try {
+				String priceStr = scraper.getContext().get("price" + i.toString()).toString();
+				String id = scraper.getContext().get("id" + i.toString()).toString();
+				String img = scraper.getContext().get("img" + i.toString()).toString();
+				String retailer = scraper.getContext().get("retailer" + i.toString()).toString();
+				String yearStr = scraper.getContext().get("year" + i.toString()).toString();
+				String modelStr = scraper.getContext().get("model" + i.toString()).toString();
+				String info = scraper.getContext().get("info" + i.toString()).toString();
+				String dateLoc = scraper.getContext().get("dateLoc" + i.toString()).toString();
 
-			info = deleteBadSymbols(info);
-			Integer mileage = getMileageFromInfo(info);
-			Double engineCap = getEngineCap(info);
+				String model = deleteBadSymbols(modelStr);
+				int year = toInt(yearStr);
+				int price = toInt(priceStr);
+				retailer = deleteBadSymbols(retailer);
+				dateLoc = deleteBadSymbols(dateLoc);
 
-			dateLoc = dateLoc.replaceAll(",", "");
-			dateLoc = dateLoc.replaceAll("['\\u00A0''\\u2007''\\u202F']", " ");
-			int index = dateLoc.indexOf(' ');
-			String city = dateLoc.substring(0, index);
-			Date date = getDate(dateLoc.substring(index + 1));
-			if (!isImgUrlValid(img))
-				img = null;
-			Image image = downloadImage(img);
-			Car car = new Car(id, model, year, price, img, retailer, info, engineCap, mileage, city, date, image);
-			cars.add(car);
-			db.addCar(car);
+				info = deleteBadSymbols(info);
+				Integer mileage = getMileageFromInfo(info);
+				Double engineCap = getEngineCap(info);
+
+				System.out.println("date before format:" + dateLoc);
+				dateLoc = dateLoc.replaceAll("['\\u00A0''\\u2007''\\u202F']", " ");
+				int index = dateLoc.indexOf(',');
+				String city = dateLoc.substring(0, index);
+				String dateStr = dateLoc.substring(index + 1);
+				dateStr = dateStr.replaceAll("['\\u00A0''\\u2007''\\u202F'',']", " ");
+				Date date = CarScraperYandex.getDate(dateStr);
+
+				if (!isImgUrlValid(img))
+					img = null;
+				Image image = null;
+				if (img != null)
+					image = downloadImage(img);
+				System.out.println("site:" + img);
+				Car car = new Car(id, model, year, price, img, retailer, info, engineCap, mileage, city, date, image);
+				db.addCar(car);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
-		return cars;
 	}
 
-	private static boolean isImgUrlValid(String img) {
-		//	boolean a = img.length() < 1;
-		//	boolean b = img.charAt(0) == '/';
-		return (img != null && img.length() >= 1 && img.charAt(0) != '/');
+	private static boolean isImgUrlValid(String imgUrl) {
+
+		return (imgUrl != null && imgUrl.length() >= 1 && imgUrl.charAt(0) != '/');
 	}
 
 	private static int toInt(String str) {
@@ -115,15 +122,15 @@ public class CarScraperYandex implements CarScraper {
 		return null;
 	}
 
-	private static Date getDate(String dateStr) {
+	public static Date getDate(String dateStr) {
 		if (dateStr == null)
 			return null;
 		dateStr = dateStr.replaceAll("( )+$", "");
-		if (dateStr.equals("сегодня")) {
+		if (dateStr.contains("сегодня")) {
 			return new Date();
 		}
 		GregorianCalendar calendar = new GregorianCalendar();
-		if (dateStr.equals("вчера")) {
+		if (dateStr.contains("вчера")) {
 			calendar.add(Calendar.DATE, -1);
 			return calendar.getTime();
 		}
@@ -161,6 +168,7 @@ public class CarScraperYandex implements CarScraper {
 		Image image = null;
 		try {
 			image = new Jpeg(new URL(imgUrl));
+
 		} catch (Exception exp) {
 			exp.printStackTrace();
 		}

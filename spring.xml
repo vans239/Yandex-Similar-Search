@@ -7,7 +7,7 @@
         <constructor-arg index="0" value="config.xml"/>
         <constructor-arg index="1" value="C:\My Dropbox\programms\Java\YaSimilarSearch"/>
         <constructor-arg index="2" value="200.68.43.235"/>
-        <constructor-arg index="3" value="77221319"/>
+        <constructor-arg index="3" value="77221419"/>
     </bean>
     <bean id="writerCar" class="PDFWriterCar">
         <property name="filename" value="content.pdf"/>
