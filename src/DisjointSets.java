@@ -33,6 +33,7 @@ public class DisjointSets {
 		if (a != b) {
 			similars[a].addAll(similars[b]);
 			similars[b].clear();
+			p[b] = a;
 			--unique;
 		}
 	}

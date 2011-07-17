@@ -6,26 +6,17 @@ import java.util.Iterator;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
+import org.apache.commons.dbcp.BasicDataSource;
+
+
 public class Main {
 	public static void main(String argv[]) throws Exception {
 		ApplicationContext ctx =
 				new FileSystemXmlApplicationContext("spring.xml");
 
-		// 77221319
-		String url = "jdbc:mysql://localhost:3306/test";
-		String driver = "com.mysql.jdbc.Driver";
-		String user = "vans239";
-		String password = "qwerty";
-		Properties properties = new Properties();
-		properties.setProperty("user", user);
-		properties.setProperty("password", password);
-		properties.setProperty("useUnicode", "true");
-		properties.setProperty("characterEncoding", "UTF-8");
-		Database db = new Database(driver, url, properties);
-
+		Database db = (Database) ctx.getBean("database");
 		db.clearTable();
-
-		int count = 150;
+		int count = (Integer) ctx.getBean("count");
 		CarScraper cs = (CarScraper) ctx.getBean("carScraper");
 		cs.scrape(count, db);
 
@@ -56,8 +47,31 @@ public class Main {
 		}
 		db.setSimilars(ds, map);
 		WriterCar writer = (WriterCar) ctx.getBean("writerCar");
-		writer.create(db, ds, map);
+		writer.create(db);
 	}
 }
-//disjoints vs spring ??
-//other properties
+//storing  image in database
+
+
+// SELECT carYandexId, similarCarYandexId, model, year, price, mileage, datesale From Car ORDER by similarCarYandexId
+/*
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+  <class name="Car" table="HibernateCar">
+    <id name="carYandexId" column="carYandexId"/>
+    <property name="model" />
+    <property name="year" />
+    <property name="price" />
+    <property name="mileage" />
+    <property name="engineCap" />
+    <property name="info" />
+    <property name="imgUrl" />
+    <property name="retailer" />
+    <property name="city" />
+    <property name="date" />
+    <property name="similarCarYandexId"/>
+  </class>
+ 
+</hibernate-mapping>
+*/

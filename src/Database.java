@@ -1,3 +1,5 @@
+import org.apache.commons.dbcp.BasicDataSource;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -13,9 +15,9 @@ import java.sql.Statement;
 public class Database implements Iterable<Car> {
 	private Connection con;
 
-	public Database(String driver, String url, Properties properties) throws SQLException, ClassNotFoundException, IllegalAccessException, InstantiationException {
-		Class.forName(driver).newInstance();
-		con = DriverManager.getConnection(url, properties);
+	public Database(BasicDataSource bds) throws SQLException, ClassNotFoundException, IllegalAccessException, InstantiationException {
+		Class.forName(bds.getDriverClassName()).newInstance();
+		con = DriverManager.getConnection(bds.getUrl(), bds.getUsername(), bds.getPassword());
 		if (!con.isClosed())
 			System.out.println("Successfully connected to MySQL server using TCP/IP...");
 	}
@@ -23,9 +25,19 @@ public class Database implements Iterable<Car> {
 	public Iterator<Car> iterator() {
 		ResultSet rs = null;
 		try {
+			Statement statement = con.createStatement();
+			rs = statement.executeQuery("SELECT * FROM Car");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return new DatabaseIterator(rs);
+	}
+	public Iterator<Car> iteratorSimilarCar() {
+		ResultSet rs = null;
+		try {
 			Statement statement = con.createStatement(java.sql.ResultSet.TYPE_FORWARD_ONLY,
 					java.sql.ResultSet.CONCUR_UPDATABLE);
-			rs = statement.executeQuery("SELECT * FROM Car");
+			rs = statement.executeQuery("SELECT * FROM Car ORDER BY similarCarYandexId");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -58,17 +70,18 @@ public class Database implements Iterable<Car> {
 		//if (car.image != null){
 		//	rs.updateObject("image", car.image);
 		//}
-		System.out.println(car.date.toString());
+
 		if (car.date != null)
-			rs.updateDate("date", new java.sql.Date(car.date.getTime()));
+			rs.updateDate("dateSale", new java.sql.Date(car.date.getTime()));
+		if (car.similarCarYandexId != null)
+			rs.updateString("similarCarYandexId", car.similarCarYandexId);
 		rs.insertRow();
 		rs.close();
 		statement.close();
 	}
 
 	public int size() throws SQLException {
-		Statement statement = con.createStatement(java.sql.ResultSet.TYPE_FORWARD_ONLY,
-				java.sql.ResultSet.CONCUR_UPDATABLE);
+		Statement statement = con.createStatement();
 		ResultSet rs = statement.executeQuery("SELECT COUNT(*) As count FROM Car");
 		rs.first();
 		int size = rs.getInt("count");
@@ -76,6 +89,15 @@ public class Database implements Iterable<Car> {
 		statement.close();
 		return size;
 	}
+	public int unique() throws SQLException {
+			Statement statement = con.createStatement();
+			ResultSet rs = statement.executeQuery("SELECT COUNT(Distinct similarCarYandexId) As count FROM Car");
+			rs.first();
+			int size = rs.getInt("count");
+			rs.close();
+			statement.close();
+			return size;
+		}
 
 	public void clearTable() throws SQLException {
 		Statement statement = con.createStatement(java.sql.ResultSet.TYPE_FORWARD_ONLY,
@@ -97,8 +119,7 @@ public class Database implements Iterable<Car> {
 	}
 
 	public Car getCarByYandexId(String carYandexId) throws SQLException {
-		Statement statement = con.createStatement(java.sql.ResultSet.TYPE_FORWARD_ONLY,
-				java.sql.ResultSet.CONCUR_UPDATABLE);
+		Statement statement = con.createStatement();
 		ResultSet rs = statement.executeQuery("SELECT * FROM Car WHERE carYandexId = '" + carYandexId + "';");
 		rs.first();
 
@@ -134,7 +155,10 @@ public class Database implements Iterable<Car> {
 		if (rs.wasNull())
 			carYandexId = null;
 		//Image image = rs.getString("carYandexId");
-		return new Car(carYandexId, model, year, price, imgUrl, retailer, info, engineCap, mileage, city, date, null);
+		String similarCarYandexId = rs.getString("similarCarYandexId");
+		if(rs.wasNull())
+			similarCarYandexId = null;
+		return new Car(carYandexId, model, year, price, imgUrl, retailer, info, engineCap, mileage, city, date, null, similarCarYandexId);
 	}
 
 	private void setSimilarCar(String carYandexId, String carSimilarYandexId) throws SQLException {

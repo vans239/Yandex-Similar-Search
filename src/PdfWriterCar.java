@@ -2,9 +2,12 @@ import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.draw.LineSeparator;
 
-import java.io.*;
-import java.util.ArrayList;
+import java.io.IOException;
+import java.io.FileOutputStream;
+import java.util.Map;
+import java.util.Iterator;
 import java.util.List;
+import java.sql.SQLException;
 
 public class PDFWriterCar implements WriterCar {
 	private final static String FONT_LOCATION = "ARIAL.ttf";
@@ -29,31 +32,32 @@ public class PDFWriterCar implements WriterCar {
 		return filename;
 	}
 
-	public void create(ArrayList<Car> cars, DisjointSets ds)
-			throws DocumentException, IOException {
+
+	public void create(Database db)
+			throws DocumentException, IOException, SQLException {
 		Document document = new Document();
 		com.itextpdf.text.pdf.PdfWriter.getInstance(document, new
 				FileOutputStream(filename)
 		);
 		document.open();
-		document.add(new Paragraph("Cars: " + cars.size() + " items " + ds.unique + " unique items"));
+		document.add(new Paragraph("Cars: " + db.size() + " items, " + db.unique() + " unique items"));
 
-		for (int i = 0; i < cars.size(); ++i) {
-			List<Integer> list = ds.similars[i];
-			if (list.size() > 0) {
+		String prevSimilarCarYandexId = null;
+		for (Iterator<Car> it = db.iteratorSimilarCar(); it.hasNext(); ) {
+			Car car = it.next();
+			if(!car.similarCarYandexId.equals(prevSimilarCarYandexId)){
+				prevSimilarCarYandexId = car.similarCarYandexId;
 				document.add(new LineSeparator(0.5f, 100, null, 0, -5));
 				document.add(new Paragraph("Same: \n"));
 			}
-			for (Integer j : list) {
-				document.add(getCarParagraph(cars.get(j)));
-			}
+			document.add(getCarParagraph(car));
 		}
 		document.close();
 	}
 
 	private Paragraph getCarParagraph(Car car) throws DocumentException {
 		Paragraph p = new Paragraph();
-		p.add(car.image);
+		//p.add(car.image);
 		p.add(new Chunk("Id: ", BOLD));
 		p.add(new Chunk(car.carYandexId, NORMAL));
 		p.add(new Chunk("\nModel: ", BOLD));

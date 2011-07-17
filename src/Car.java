@@ -15,11 +15,12 @@ public class Car {
 	String city;
 	Date date;
 	Image image;
+    String similarCarYandexId;
 
 	String colour = null;
 
 	public Car(String carYandexId, String model, int year, int price, String imgUrl, String retailer,
-			   String info, Double engineCap, Integer mileage, String city, Date date, Image image) {
+			   String info, Double engineCap, Integer mileage, String city, Date date, Image image, String similarCarYandexId) {
 		this.carYandexId = carYandexId;
 		this.model = model;
 		this.year = year;
@@ -32,6 +33,10 @@ public class Car {
 		this.city = city;
 		this.date = date;
 		this.image = image;
+		if(similarCarYandexId != null)
+			this.similarCarYandexId = similarCarYandexId;
+		else
+			this.similarCarYandexId = this.carYandexId;
 	}
 
 	public boolean isSimilar(Car car) {

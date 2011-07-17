@@ -69,7 +69,7 @@ public class CarScraperYandex implements CarScraper {
 				Integer mileage = getMileageFromInfo(info);
 				Double engineCap = getEngineCap(info);
 
-				System.out.println("date before format:" + dateLoc);
+				//System.out.println("date before format:" + dateLoc);
 				dateLoc = dateLoc.replaceAll("['\\u00A0''\\u2007''\\u202F']", " ");
 				int index = dateLoc.indexOf(',');
 				String city = dateLoc.substring(0, index);
@@ -82,8 +82,8 @@ public class CarScraperYandex implements CarScraper {
 				Image image = null;
 				if (img != null)
 					image = downloadImage(img);
-				System.out.println("site:" + img);
-				Car car = new Car(id, model, year, price, img, retailer, info, engineCap, mileage, city, date, image);
+				//System.out.println("site:" + img);
+				Car car = new Car(id, model, year, price, img, retailer, info, engineCap, mileage, city, date, image, null);
 				db.addCar(car);
 			} catch (Exception e) {
 				e.printStackTrace();
