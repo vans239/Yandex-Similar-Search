@@ -1,4 +1,3 @@
-import java.util.Properties;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -6,25 +5,21 @@ import java.util.Iterator;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
-import org.apache.commons.dbcp.BasicDataSource;
-
-
 public class Main {
 	public static void main(String argv[]) throws Exception {
 		ApplicationContext ctx =
 				new FileSystemXmlApplicationContext("spring.xml");
 
 		Database db = (Database) ctx.getBean("database");
-		db.clearTable();
+		/*db.clearTable();
 		int count = (Integer) ctx.getBean("count");
 		CarScraper cs = (CarScraper) ctx.getBean("carScraper");
-		cs.scrape(count, db);
+		cs.scrape(count, db);*/
 
 		int size = db.size();
 
 		DisjointSets ds = new DisjointSets(size);
 		Map<String, Integer> map = new HashMap<String, Integer>();
-
 		int dsNumber = 0;
 		for (Iterator it = db.iterator(); it.hasNext(); ) {
 			Car car = (Car) it.next();
@@ -33,8 +28,11 @@ public class Main {
 				++dsNumber;
 			}
 		}
+		System.out.println("Finding similar cars...");
+
+
 		for (Iterator<Car> it1 = db.iterator(); it1.hasNext(); ) {
-			Car car1 = (Car) it1.next();
+			Car car1 = it1.next();
 			for (Iterator<Car> it2 = db.iterator(); it2.hasNext(); ) {
 				Car car2 = it2.next();
 				if (!car1.carYandexId.equals(car2.carYandexId) && car1.isSimilar(car2)) {
@@ -46,6 +44,8 @@ public class Main {
 			}
 		}
 		db.setSimilars(ds, map);
+		System.out.println("Creating output...(downloading images for pdf)...");
+
 		WriterCar writer = (WriterCar) ctx.getBean("writerCar");
 		writer.create(db);
 	}
@@ -53,7 +53,7 @@ public class Main {
 //storing  image in database
 
 
-// SELECT carYandexId, similarCarYandexId, model, year, price, mileage, datesale From Car ORDER by similarCarYandexId
+// SELECT carYandexId, similarCarYandexId, model, year, price, mileage, datesale From Car ORDER by similarCarYandexId;
 /*
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">

@@ -79,11 +79,8 @@ public class CarScraperYandex implements CarScraper {
 
 				if (!isImgUrlValid(img))
 					img = null;
-				Image image = null;
-				if (img != null)
-					image = downloadImage(img);
 				//System.out.println("site:" + img);
-				Car car = new Car(id, model, year, price, img, retailer, info, engineCap, mileage, city, date, image, null);
+				Car car = new Car(id, model, year, price, img, retailer, info, engineCap, mileage, city, date, null);
 				db.addCar(car);
 			} catch (Exception e) {
 				e.printStackTrace();

@@ -15,7 +15,7 @@
         <constructor-arg ref="myDataSource"/>
     </bean>
     <bean id="count" class="java.lang.Integer">
-        <constructor-arg type="int" value="150"/>
+        <constructor-arg type="int" value="30"/>
     </bean>
     <bean id="carScraper" class="CarScraperYandex">
         <constructor-arg index="0" type="java.lang.String" value="config.xml"/>

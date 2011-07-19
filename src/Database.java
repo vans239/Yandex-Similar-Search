@@ -32,6 +32,7 @@ public class Database implements Iterable<Car> {
 		}
 		return new DatabaseIterator(rs);
 	}
+
 	public Iterator<Car> iteratorSimilarCar() {
 		ResultSet rs = null;
 		try {
@@ -89,15 +90,16 @@ public class Database implements Iterable<Car> {
 		statement.close();
 		return size;
 	}
+
 	public int unique() throws SQLException {
-			Statement statement = con.createStatement();
-			ResultSet rs = statement.executeQuery("SELECT COUNT(Distinct similarCarYandexId) As count FROM Car");
-			rs.first();
-			int size = rs.getInt("count");
-			rs.close();
-			statement.close();
-			return size;
-		}
+		Statement statement = con.createStatement();
+		ResultSet rs = statement.executeQuery("SELECT COUNT(Distinct similarCarYandexId) As count FROM Car");
+		rs.first();
+		int size = rs.getInt("count");
+		rs.close();
+		statement.close();
+		return size;
+	}
 
 	public void clearTable() throws SQLException {
 		Statement statement = con.createStatement(java.sql.ResultSet.TYPE_FORWARD_ONLY,
@@ -107,14 +109,18 @@ public class Database implements Iterable<Car> {
 	}
 
 	public void setSimilars(DisjointSets ds, Map<String, Integer> map) throws SQLException {
-		for (Iterator<Car> it = iterator(); it.hasNext(); ) {
-			Car car = it.next();
+		Statement statement = con.createStatement(java.sql.ResultSet.TYPE_FORWARD_ONLY,
+				java.sql.ResultSet.CONCUR_UPDATABLE);
+		String sqlRequest = "SELECT * FROM CAR;";
+		ResultSet rs = statement.executeQuery(sqlRequest);
+
+		while (rs.next()) {
+			Car car = getCar(rs);
 			int i = map.get(car.carYandexId);
-			List<Integer> list = ds.similars[i];
-			for (Integer j : list) {
-				String carYandexId = Util.getKeyByValue(map, j);
-				setSimilarCar(carYandexId, car.carYandexId);
-			}
+			int root = ds.root(i);
+			String carYandexId = Util.getKeyByValue(map, root);
+			rs.updateString("similarCarYandexId", carYandexId);
+			rs.updateRow();
 		}
 	}
 
@@ -156,16 +162,9 @@ public class Database implements Iterable<Car> {
 			carYandexId = null;
 		//Image image = rs.getString("carYandexId");
 		String similarCarYandexId = rs.getString("similarCarYandexId");
-		if(rs.wasNull())
+		if (rs.wasNull())
 			similarCarYandexId = null;
-		return new Car(carYandexId, model, year, price, imgUrl, retailer, info, engineCap, mileage, city, date, null, similarCarYandexId);
-	}
-
-	private void setSimilarCar(String carYandexId, String carSimilarYandexId) throws SQLException {
-		Statement statement = con.createStatement(java.sql.ResultSet.TYPE_FORWARD_ONLY,
-				java.sql.ResultSet.CONCUR_UPDATABLE);
-		String sqlRequest = "UPDATE Car SET similarCarYandexId = '" + carSimilarYandexId +
-				"' WHERE (carYandexId = '" + carYandexId + "');";
-		statement.execute(sqlRequest);
+		return new Car(carYandexId, model, year, price, imgUrl, retailer,
+				info, engineCap, mileage, city, date, similarCarYandexId);
 	}
 }

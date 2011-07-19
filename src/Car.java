@@ -1,7 +1,5 @@
 import java.util.Date;
 
-import com.itextpdf.text.Image;
-
 public class Car {
 	String carYandexId;
 	String model;
@@ -14,13 +12,12 @@ public class Car {
 	String retailer;
 	String city;
 	Date date;
-	Image image;
-    String similarCarYandexId;
+	String similarCarYandexId;
 
 	String colour = null;
 
 	public Car(String carYandexId, String model, int year, int price, String imgUrl, String retailer,
-			   String info, Double engineCap, Integer mileage, String city, Date date, Image image, String similarCarYandexId) {
+			   String info, Double engineCap, Integer mileage, String city, Date date, String similarCarYandexId) {
 		this.carYandexId = carYandexId;
 		this.model = model;
 		this.year = year;
@@ -32,22 +29,26 @@ public class Car {
 		this.engineCap = engineCap;
 		this.city = city;
 		this.date = date;
-		this.image = image;
-		if(similarCarYandexId != null)
+		if (similarCarYandexId != null)
 			this.similarCarYandexId = similarCarYandexId;
 		else
 			this.similarCarYandexId = this.carYandexId;
 	}
 
 	public boolean isSimilar(Car car) {
-		if (this.year != car.year || !isModelSimilar(car) || !isEngineCapSimilar(car) || !this.city.equals(car.city)
-				|| !isDateSimilar(car))
+		if (this.year != car.year || !isModelSimilar(car) || !isEngineCapSimilar(car) || !this.city.equals(car.city))
 			return false;
 
 		if (isImgSimilar(car)) {
 			return true;
 		}
-		return true;
+
+		// error: in mileage
+		if (diffDateDay(car) < 5 && (Math.abs(car.price - price) < 15000))
+			return true;
+		if (diffDateDay(car) < 5 && (Math.abs(car.price - price) < 40000) && (Math.abs(car.mileage - mileage) < 5000))
+			return true;
+		return false;
 	}
 
 	private boolean isImgSimilar(Car car) {
@@ -59,12 +60,12 @@ public class Car {
 		return false;
 	}
 
-	private boolean isDateSimilar(Car car) {
+	private long diffDateDay(Car car) {
 		if (this.date == null || car.date == null)
-			return true;
+			return 0;
 		long diff = this.date.getTime() - car.date.getTime();
 		final long day = 24 * 60 * 60 * 1000;
-		return diff < 2 * day;
+		return diff / day;
 	}
 
 	private boolean isModelSimilar(Car car) {
