@@ -1,21 +1,31 @@
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Properties;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
+
 public class Main {
 	public static void main(String argv[]) throws Exception {
 		ApplicationContext ctx =
-				new FileSystemXmlApplicationContext("spring.xml");
+				new FileSystemXmlApplicationContext("resources/spring.xml");
 
 		Database db = (Database) ctx.getBean("database");
-		/*db.clearTable();
-		int count = (Integer) ctx.getBean("count");
-		CarScraper cs = (CarScraper) ctx.getBean("carScraper");
-		cs.scrape(count, db);*/
 
+		Properties properties = new Properties();
+		properties.load(new FileInputStream("resources/project.properties"));
+		boolean isScrape = Boolean.valueOf(properties.getProperty("isScrape"));
+		if (isScrape) {
+			db.clearTable();
+			int count = Integer.valueOf(properties.getProperty("webharvest.count"));
+			CarScraper cs = (CarScraper) ctx.getBean("carScraper");
+			cs.scrape(count, db);
+		}
 		int size = db.size();
 
 		DisjointSets ds = new DisjointSets(size);
@@ -43,6 +53,7 @@ public class Main {
 				}
 			}
 		}
+		System.out.println("Updating similars...");
 		db.setSimilars(ds, map);
 		System.out.println("Creating output...(downloading images for pdf)...");
 
@@ -53,7 +64,7 @@ public class Main {
 //storing  image in database
 
 
-// SELECT carYandexId, similarCarYandexId, model, year, price, mileage, datesale From Car ORDER by similarCarYandexId;
+// SELECT carYandexId, similarCarYandexId, model, year, price, mileage, datesale, engineCap From Car ORDER by similarCarYandexId;
 /*
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">

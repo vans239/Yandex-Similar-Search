@@ -44,7 +44,7 @@ public class Car {
 		}
 
 		// error: in mileage
-		if (diffDateDay(car) < 5 && (Math.abs(car.price - price) < 15000))
+		if (diffDateDay(car) < 5 && (Math.abs(car.price - price) < 30000))
 			return true;
 		if (diffDateDay(car) < 5 && (Math.abs(car.price - price) < 40000) && (Math.abs(car.mileage - mileage) < 5000))
 			return true;

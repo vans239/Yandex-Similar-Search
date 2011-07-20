@@ -1,0 +1,54 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location">
+            <value>resources/project.properties</value>
+        </property>
+    </bean>
+    <bean id="myDataSource"
+          class="org.apache.commons.dbcp.BasicDataSource"
+          destroy-method="close">
+        <property name="driverClassName">
+            <value>${jdbc.driver}</value>
+        </property>
+        <property name="url">
+            <value>${jdbc.url}</value>
+        </property>
+        <property name="username">
+            <value>${jdbc.user}</value>
+        </property>
+        <property name="password">
+            <value>${jdbc.password}</value>
+        </property>
+    </bean>
+    <bean id="database" class="Database">
+        <constructor-arg ref="myDataSource"/>
+    </bean>
+    <bean id="count" class="java.lang.Integer">
+        <constructor-arg type="int" value="30"/>
+    </bean>
+
+    <bean id="carScraper" class="CarScraperYandex">
+        <constructor-arg index="0" type="java.lang.String">
+            <value>${webharvest.file}</value>
+        </constructor-arg>
+        <constructor-arg index="1" type="java.lang.String">
+            <value>${webharvest.path}</value>
+        </constructor-arg>
+        <constructor-arg index="2" type="java.lang.String">
+            <value>${webharvest.proxy}</value>
+        </constructor-arg>
+        <constructor-arg index="3" type="int">
+            <value>${webharvest.start}</value>
+        </constructor-arg>
+    </bean>
+
+    <bean id="writerCar" class="PDFWriterCar">
+        <property name="filename">
+            <value>${writer.file}</value>
+        </property>
+    </bean>
+</beans>

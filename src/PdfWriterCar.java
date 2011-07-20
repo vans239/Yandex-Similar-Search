@@ -4,6 +4,7 @@ import com.itextpdf.text.pdf.draw.LineSeparator;
 
 import java.io.IOException;
 import java.io.FileOutputStream;
+import java.net.URL;
 import java.util.Map;
 import java.util.Iterator;
 import java.util.List;
@@ -45,7 +46,7 @@ public class PDFWriterCar implements WriterCar {
 		String prevSimilarCarYandexId = null;
 		for (Iterator<Car> it = db.iteratorSimilarCar(); it.hasNext(); ) {
 			Car car = it.next();
-			if(!car.similarCarYandexId.equals(prevSimilarCarYandexId)){
+			if (!car.similarCarYandexId.equals(prevSimilarCarYandexId)) {
 				prevSimilarCarYandexId = car.similarCarYandexId;
 				document.add(new LineSeparator(0.5f, 100, null, 0, -5));
 				document.add(new Paragraph("Same: \n"));
@@ -55,9 +56,24 @@ public class PDFWriterCar implements WriterCar {
 		document.close();
 	}
 
+	private Image downloadImage(String imgUrl) {
+
+		Image image = null;
+		if (imgUrl == null)
+			return null;
+		try {
+			image = new Jpeg(new URL(imgUrl));
+
+		} catch (Exception exp) {
+			exp.printStackTrace();
+		}
+		return image;
+	}
+
 	private Paragraph getCarParagraph(Car car) throws DocumentException {
 		Paragraph p = new Paragraph();
-		//p.add(car.image);
+		Image image = downloadImage(car.imgUrl);
+		p.add(image);
 		p.add(new Chunk("Id: ", BOLD));
 		p.add(new Chunk(car.carYandexId, NORMAL));
 		p.add(new Chunk("\nModel: ", BOLD));
