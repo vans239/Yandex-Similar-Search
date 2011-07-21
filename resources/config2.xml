@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
-    <include path="multi_page.xml"/>
+    <include path="multi-page.xml"/>
     <var-def name="searchEngine">avto</var-def>
     <!-- & -> &amp; -->
     <var-def name="content">
         <http url="${pageUrl}"/>
+    </var-def>
+    <var-def name="count">
+        <template>${count.toInt() / 10}</template>
     </var-def>
     <var-def name="itemXPath">//table[@class='search-results']//tr</var-def>
     <var-def name="nextXPath">//a[@class='b-pager__next']/@href</var-def>
@@ -21,19 +24,10 @@
                 <var name="itemXPath"/>
             </call-param>
             <call-param name="maxloops">
-                <var name="maxloops"/>
+                <var name="count"/>
             </call-param>
         </call>
     </var-def>
-    <file action="write" path="data/2.html">
-        <html-to-xml>
-            <http url="${pageUrl}"/>
-        </html-to-xml>
-    </file>
-    <file action="write" path="data/1.html">
-        <var name="maxloops"/>
-        <var name="pageUrl"/>
-    </file>
     <var-def name="idXPath">//tr[@id]/@id</var-def>
     <var-def name="priceXPath">//td[@class='price']/div[@class='p']/b/child::text()</var-def>
     <var-def name="imgXPath">//td[@class='pic']/a/img/@src</var-def>
@@ -100,8 +94,4 @@
             </body>
         </loop>
     </var-def>
-    <file action="write" path="data/content.html">
-        <var name="carsFormatted"/>
-
-    </file>
 </config>

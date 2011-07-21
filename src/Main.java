@@ -7,6 +7,7 @@ import java.util.Properties;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
+import sun.nio.cs.UTF_32LE;
 
 import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 
@@ -21,10 +22,12 @@ public class Main {
 		properties.load(new FileInputStream("resources/project.properties"));
 		boolean isScrape = Boolean.valueOf(properties.getProperty("isScrape"));
 		if (isScrape) {
+			System.out.println("Scraping cars.. ");
 			db.clearTable();
 			int count = Integer.valueOf(properties.getProperty("webharvest.count"));
+			String pageUrl = properties.getProperty("webharvest.url");
 			CarScraper cs = (CarScraper) ctx.getBean("carScraper");
-			cs.scrape(count, db);
+			cs.scrape(pageUrl, count, db);
 		}
 		int size = db.size();
 
@@ -59,6 +62,7 @@ public class Main {
 
 		WriterCar writer = (WriterCar) ctx.getBean("writerCar");
 		writer.create(db);
+
 	}
 }
 //storing  image in database

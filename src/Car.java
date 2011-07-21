@@ -17,7 +17,7 @@ public class Car {
 	String colour = null;
 
 	public Car(String carYandexId, String model, int year, int price, String imgUrl, String retailer,
-			   String info, Double engineCap, Integer mileage, String city, Date date, String similarCarYandexId) {
+			   String info, Double engineCap, Integer mileage, String city, Date date, String colour, String similarCarYandexId) {
 		this.carYandexId = carYandexId;
 		this.model = model;
 		this.year = year;
@@ -29,6 +29,7 @@ public class Car {
 		this.engineCap = engineCap;
 		this.city = city;
 		this.date = date;
+		this.colour = colour;
 		if (similarCarYandexId != null)
 			this.similarCarYandexId = similarCarYandexId;
 		else
@@ -36,19 +37,22 @@ public class Car {
 	}
 
 	public boolean isSimilar(Car car) {
-		if (this.year != car.year || !isModelSimilar(car) || !isEngineCapSimilar(car) || !this.city.equals(car.city))
+		if (this.year != car.year || !isModelSimilar(car) || !isEngineCapSimilar(car) || !this.city.equals(car.city)
+				|| !isColourSame(car))
 			return false;
 
 		if (isImgSimilar(car)) {
 			return true;
 		}
-
-		// error: in mileage
-		if (diffDateDay(car) < 5 && (Math.abs(car.price - price) < 30000))
-			return true;
-		if (diffDateDay(car) < 5 && (Math.abs(car.price - price) < 40000) && (Math.abs(car.mileage - mileage) < 5000))
+		if (diffDateDay(car) < 5 && (Math.abs(car.price - price) < 40000) && (getDiffMileage(car) < 40000))
 			return true;
 		return false;
+	}
+
+	private boolean isColourSame(Car car) {
+		if (car.colour == null || colour == null)
+			return true;
+		return colour.equals(car.colour);
 	}
 
 	private boolean isImgSimilar(Car car) {
@@ -75,6 +79,17 @@ public class Car {
 			return car.isModelSimilar(this);
 		String str = car.model.substring(0, this.model.length());
 		return str.equals(model);
+	}
+
+	public int getDiffMileage(Car car) {
+		if (car.mileage == null || mileage == null)
+			return 0;
+		// error in advertisment 130000 130
+		if (car.mileage < 1000)
+			car.mileage *= 1000;
+		if (mileage < 1000)
+			mileage *= 1000;
+		return Math.abs(car.mileage - mileage);
 	}
 
 	private boolean isEngineCapSimilar(Car car) {

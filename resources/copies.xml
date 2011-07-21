@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <function name="copies-list">
+        <return>
+            <empty>
+                <var-def name="content">
+                    <html-to-xml>
+                        <http url="${pageUrl}"/>
+                    </html-to-xml>
+                </var-def>
+            </empty>
+            <xpath expression="${itemXPath}">
+                <var name="content"/>
+            </xpath>
+        </return>
+    </function>
+
+</config>

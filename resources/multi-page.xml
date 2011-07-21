@@ -1,4 +1,5 @@
 <config>
+    <include path="copies.xml"/>
     <!--Download multi-page list of items. @param pageUrl - URL of starting page @param itemXPath - XPath expression to obtain single item in the list @param nextXPath - XPath expression to URL for the next page @param maxloops - maximum number of pages downloaded @return list of all downloaded items-->
     <function name="download-multipage-list">
         <return>
@@ -14,14 +15,29 @@
                             <var name="content"/>
                         </xpath>
                     </var-def>
+                    <var-def name="clusterUrl">
+                        <xpath expression="${nextXPath}">
+                            <var name="content"/>
+                        </xpath>
+                    </var-def>
                     <var-def name="pageUrl">
                         <template>${sys.fullUrl(pageUrl.toString(), nextLinkUrl.toString())}</template>
+                    </var-def>
+                    <var-def name="pageCopiesUrl">
+                        <template>${sys.fullUrl(pageUrl.toString(), clusterUrl.toString())}</template>
                     </var-def>
                 </empty>
                 <xpath expression="${itemXPath}">
                     <var name="content"/>
                 </xpath>
-
+                <call name="copies-list">
+                    <call-param name="pageUrl">
+                        <var name="pageCopiesUrl"/>
+                    </call-param>
+                    <call-param name="itemXPath">
+                        <var name="itemXPath"/>
+                    </call-param>
+                </call>
             </while>
         </return>
     </function>

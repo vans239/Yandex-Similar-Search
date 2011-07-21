@@ -1,3 +1,3 @@
 public interface CarScraper {
-	void scrape(int count, Database add) throws Exception;
+	void scrape(String url, int count, Database add) throws Exception;
 }

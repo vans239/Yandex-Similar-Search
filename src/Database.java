@@ -1,8 +1,6 @@
 import org.apache.commons.dbcp.BasicDataSource;
 
 import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
 import java.util.Date;
 import java.util.Map;
 
@@ -71,7 +69,8 @@ public class Database implements Iterable<Car> {
 		//if (car.image != null){
 		//	rs.updateObject("image", car.image);
 		//}
-
+		if (car.colour != null)
+			rs.updateString("colour", car.colour);
 		if (car.date != null)
 			rs.updateDate("dateSale", new java.sql.Date(car.date.getTime()));
 		if (car.similarCarYandexId != null)
@@ -131,6 +130,14 @@ public class Database implements Iterable<Car> {
 		return getCar(rs);
 	}
 
+	public boolean isExist(String carYandexId) throws SQLException {
+		Statement statement = con.createStatement();
+		ResultSet rs = statement.executeQuery("SELECT COUNT(*) As count FROM Car WHERE carYandexId = '" + carYandexId + "';");
+		rs.first();
+		int count = rs.getInt("count");
+		return count != 0;
+	}
+
 	public static Car getCar(ResultSet rs) throws SQLException {
 		String model = rs.getString("model");
 		int year = rs.getInt("year");
@@ -159,11 +166,14 @@ public class Database implements Iterable<Car> {
 		String carYandexId = rs.getString("carYandexId");
 		if (rs.wasNull())
 			carYandexId = null;
+		String colour = rs.getString("colour");
+		if (rs.wasNull())
+			colour = null;
 		//Image image = rs.getString("carYandexId");
 		String similarCarYandexId = rs.getString("similarCarYandexId");
 		if (rs.wasNull())
 			similarCarYandexId = null;
 		return new Car(carYandexId, model, year, price, imgUrl, retailer,
-				info, engineCap, mileage, city, date, similarCarYandexId);
+				info, engineCap, mileage, city, date, colour, similarCarYandexId);
 	}
 }

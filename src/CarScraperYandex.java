@@ -16,7 +16,7 @@ import com.itextpdf.text.Image;
 import com.itextpdf.text.Jpeg;
 
 public class CarScraperYandex implements CarScraper {
-	public static String url = "http://auto.yandex.ru/search.xml?cluster_id=";
+	//public static String url = "http://auto.yandex.ru/search.xml?cluster_id=";
 	private String config;
 	private String workDir;
 	private String proxy;
@@ -29,7 +29,7 @@ public class CarScraperYandex implements CarScraper {
 		this.begin = begin;
 	}
 
-	public void scrape(int count, Database db) throws Exception {
+	public void scrape(String url, int count, Database db) throws Exception {
 		int end = begin + count;
 		if (begin <= 0 || begin >= end) {
 			throw new Exception("Wrong begin or end");
@@ -43,12 +43,12 @@ public class CarScraperYandex implements CarScraper {
 			scraper.getHttpClientManager().setHttpProxy(proxy, 80);
 		scraper.addVariableToContext("now", begin);
 		scraper.addVariableToContext("end", end);
+		scraper.addVariableToContext("count", count);
 		scraper.addVariableToContext("pageUrl", url);
 		scraper.execute();
 
 		int countScrapedCars = ((Variable) scraper.getContext().get("count")).toInt();
 		for (Integer i = 1; i <= countScrapedCars; ++i) {
-
 			try {
 				String priceStr = scraper.getContext().get("price" + i.toString()).toString();
 				String id = scraper.getContext().get("id" + i.toString()).toString();
@@ -76,12 +76,14 @@ public class CarScraperYandex implements CarScraper {
 				String dateStr = dateLoc.substring(index + 1);
 				dateStr = dateStr.replaceAll("['\\u00A0''\\u2007''\\u202F'',']", " ");
 				Date date = CarScraperYandex.getDate(dateStr);
-
+				String colour = getColour(info);
 				if (!isImgUrlValid(img))
 					img = null;
 				//System.out.println("site:" + img);
-				Car car = new Car(id, model, year, price, img, retailer, info, engineCap, mileage, city, date, null);
-				db.addCar(car);
+
+				Car car = new Car(id, model, year, price, img, retailer, info, engineCap, mileage, city, date, colour, null);
+				if (!db.isExist(car.carYandexId))
+					db.addCar(car);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -159,6 +161,18 @@ public class CarScraperYandex implements CarScraper {
 			exp.printStackTrace();
 		}
 		return date;
+	}
+
+	private static String getColour(String info) {
+		Pattern pattern = Pattern.compile("цвет (.)*?,");
+		Matcher matcher = pattern.matcher(info);
+		if (matcher.find()) {
+			String colour = matcher.group();
+			colour = colour.replaceAll("['\\u00A0''\\u2007''\\u202F'','' ']", "");
+			colour = colour.replaceAll("цвет", "");
+			return colour;
+		}
+		return null;
 	}
 
 	private static Image downloadImage(String imgUrl) {
