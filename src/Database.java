@@ -128,7 +128,6 @@ public class Database implements Iterable<Car> {
 		Statement statement = con.createStatement();
 		ResultSet rs = statement.executeQuery("SELECT * FROM Car WHERE carYandexId = '" + carYandexId + "';");
 		rs.first();
-
 		return getCar(rs);
 	}
 
