@@ -1,6 +1,5 @@
 <config>
     <include path="copies.xml"/>
-    <!--Download multi-page list of items. @param pageUrl - URL of starting page @param itemXPath - XPath expression to obtain single item in the list @param nextXPath - XPath expression to URL for the next page @param maxloops - maximum number of pages downloaded @return list of all downloaded items-->
     <function name="download-multipage-list">
         <return>
             <while condition="${pageUrl.toString().length() != 0}" maxloops="${maxloops}" index="i">
@@ -10,18 +9,20 @@
                             <http url="${pageUrl}"/>
                         </html-to-xml>
                     </var-def>
+
                     <var-def name="nextLinkUrl">
                         <xpath expression="${nextXPath}">
                             <var name="content"/>
                         </xpath>
                     </var-def>
+                    <var-def name="pageUrl">
+                        <template>${sys.fullUrl(pageUrl.toString(), nextLinkUrl.toString())}</template>
+                    </var-def>
+
                     <var-def name="clusterUrl">
                         <xpath expression="${copiesXPath}">
                             <var name="content"/>
                         </xpath>
-                    </var-def>
-                    <var-def name="pageUrl">
-                        <template>${sys.fullUrl(pageUrl.toString(), nextLinkUrl.toString())}</template>
                     </var-def>
                 </empty>
                 <xpath expression="${itemXPath}">
@@ -36,7 +37,7 @@
                             <var-def name="pageCopiesUrl">
                                 <template>${sys.fullUrl(pageUrl.toString(), url.toString())}</template>
                             </var-def>
-                            <file action="write" path="pageCopiesUrl.html">
+                            <file action="write" path="data/pageCopiesUrl.html">
                                 <var name="pageCopiesUrl"/>
                             </file>
                         </empty>
@@ -53,4 +54,35 @@
             </while>
         </return>
     </function>
+    <!---
+    <var-def name="pageUrl">
+        <template>${pageUrl}</template>
+    </var-def>
+    <var-def name="count">
+        3
+    </var-def>
+    <var-def name="itemXPath">//table[@class='search-results']//tr</var-def>
+    <var-def name="nextXPath">//a[@class='b-pager__next']/@href</var-def>
+    <var-def name="copiesXPath">//ul/li[@class="btm"]/a[not(@class)]/@href</var-def>
+    <var-def name="usersUrl">
+        <call name="download-multipage-list">
+            <call-param name="pageUrl">
+                <var name="pageUrl"/>
+            </call-param>
+            <call-param name="nextXPath">
+                <var name="nextXPath"/>
+            </call-param>
+            <call-param name="itemXPath">
+                <var name="itemXPath"/>
+            </call-param>
+            <call-param name="maxloops">
+                <var name="count"/>
+            </call-param>
+            <call-param name="copiesXPath">
+                <var name="copiesXPath"/>
+            </call-param>
+        </call>
+    </var-def>
+    -->
 </config>
+

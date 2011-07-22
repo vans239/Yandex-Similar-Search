@@ -38,7 +38,8 @@ public class Car {
 	}
 
 	public boolean isSimilar(Car car) {
-		if (this.year != car.year || !isModelSimilar(car) || !isEngineCapSimilar(car) || !this.city.equals(car.city))
+		if (this.year != car.year || !isModelSimilar(car) || !isEngineCapSimilar(car) || !this.city.equals(car.city)
+				|| !isColourSimilar(car) || !isConditionSimilar(car))
 			return false;
 
 		if (isImgSimilar(car)) {
