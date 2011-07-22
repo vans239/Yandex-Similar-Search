@@ -80,12 +80,16 @@ public class Car {
 	}
 
 	private boolean isModelSimilar(Car car) {
-		// may be Levenshtein  distance  will be better
-
 		if (this.model.length() > car.model.length())
 			return car.isModelSimilar(this);
 		String str = car.model.substring(0, this.model.length());
-		return str.equals(model);
+		/*
+			mercedes benz e-class  mercedes-benz e-220
+			mercedes benz e-superclass  mercedes-benz e-220
+		 */
+		return str.equals(model)
+				|| LevenshteinDist.getDist(car.model, model) < Math.max(car.model.length(), model.length()) / 4
+				|| LevenshteinDist.getDist(str, model) < model.length() / 4;
 	}
 
 	public int getDiffMileage(Car car) {

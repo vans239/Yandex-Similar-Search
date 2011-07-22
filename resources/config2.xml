@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
     <include path="multi-page.xml"/>
-    <var-def name="searchEngine">avto</var-def>
     <!-- & -> &amp; -->
     <var-def name="pageUrl">
         <template>${pageUrl}</template>

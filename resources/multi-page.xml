@@ -18,7 +18,6 @@
                     <var-def name="pageUrl">
                         <template>${sys.fullUrl(pageUrl.toString(), nextLinkUrl.toString())}</template>
                     </var-def>
-
                     <var-def name="clusterUrl">
                         <xpath expression="${copiesXPath}">
                             <var name="content"/>
