@@ -71,6 +71,8 @@ public class Database implements Iterable<Car> {
 		//}
 		if (car.colour != null)
 			rs.updateString("colour", car.colour);
+		if (car.condition != null)
+			rs.updateString("conditionCar", car.condition);
 		if (car.date != null)
 			rs.updateDate("dateSale", new java.sql.Date(car.date.getTime()));
 		if (car.similarCarYandexId != null)
@@ -169,11 +171,14 @@ public class Database implements Iterable<Car> {
 		String colour = rs.getString("colour");
 		if (rs.wasNull())
 			colour = null;
+		String condition = rs.getString("conditionCar");
+		if (rs.wasNull())
+			condition = null;
 		//Image image = rs.getString("carYandexId");
 		String similarCarYandexId = rs.getString("similarCarYandexId");
 		if (rs.wasNull())
 			similarCarYandexId = null;
 		return new Car(carYandexId, model, year, price, imgUrl, retailer,
-				info, engineCap, mileage, city, date, colour, similarCarYandexId);
+				info, engineCap, mileage, city, date, colour, condition, similarCarYandexId);
 	}
 }

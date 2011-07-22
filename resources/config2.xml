@@ -11,6 +11,7 @@
     </var-def>
     <var-def name="itemXPath">//table[@class='search-results']//tr</var-def>
     <var-def name="nextXPath">//a[@class='b-pager__next']/@href</var-def>
+    <var-def name="copiesXPath">//ul/li[@class="btm"]/a[not(@class)]/@href</var-def>
     <!-- collects all tables for individual users -->
     <var-def name="usersUrl">
         <call name="download-multipage-list">
@@ -25,6 +26,9 @@
             </call-param>
             <call-param name="maxloops">
                 <var name="count"/>
+            </call-param>
+            <call-param name="copiesXPath">
+                <var name="copiesXPath"/>
             </call-param>
         </call>
     </var-def>

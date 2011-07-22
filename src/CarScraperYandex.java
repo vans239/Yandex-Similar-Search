@@ -77,11 +77,12 @@ public class CarScraperYandex implements CarScraper {
 				dateStr = dateStr.replaceAll("['\\u00A0''\\u2007''\\u202F'',']", " ");
 				Date date = CarScraperYandex.getDate(dateStr);
 				String colour = getColour(info);
+				String condition = getCondition(info);
 				if (!isImgUrlValid(img))
 					img = null;
 				//System.out.println("site:" + img);
 
-				Car car = new Car(id, model, year, price, img, retailer, info, engineCap, mileage, city, date, colour, null);
+				Car car = new Car(id, model, year, price, img, retailer, info, engineCap, mileage, city, date, colour, condition, null);
 				if (!db.isExist(car.carYandexId))
 					db.addCar(car);
 			} catch (Exception e) {
@@ -164,7 +165,7 @@ public class CarScraperYandex implements CarScraper {
 	}
 
 	private static String getColour(String info) {
-		Pattern pattern = Pattern.compile("цвет (.)*?,");
+		Pattern pattern = Pattern.compile("цвет [^ ,]*");
 		Matcher matcher = pattern.matcher(info);
 		if (matcher.find()) {
 			String colour = matcher.group();
@@ -175,15 +176,16 @@ public class CarScraperYandex implements CarScraper {
 		return null;
 	}
 
-	private static Image downloadImage(String imgUrl) {
-		Image image = null;
-		try {
-			image = new Jpeg(new URL(imgUrl));
-
-		} catch (Exception exp) {
-			exp.printStackTrace();
+	private static String getCondition(String info) {
+		Pattern pattern = Pattern.compile("[^ ,]* сост.");
+		Matcher matcher = pattern.matcher(info);
+		if (matcher.find()) {
+			String condition = matcher.group();
+			condition = condition.replaceAll("['\\u00A0''\\u2007''\\u202F'','' ']", "");
+			condition = condition.replaceAll("сост.", "");
+			return condition;
 		}
-		return image;
+		return null;
 	}
 
 	private static String deleteBadSymbols(String str) {

@@ -1,9 +1,6 @@
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Properties;
+import java.util.*;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
@@ -13,6 +10,7 @@ import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 
 public class Main {
 	public static void main(String argv[]) throws Exception {
+		System.out.println("Start time:" + new Date());
 		ApplicationContext ctx =
 				new FileSystemXmlApplicationContext("resources/spring.xml");
 
@@ -22,7 +20,7 @@ public class Main {
 		properties.load(new FileInputStream("resources/project.properties"));
 		boolean isScrape = Boolean.valueOf(properties.getProperty("isScrape"));
 		if (isScrape) {
-			System.out.println("Scraping cars.. ");
+			System.out.println("Scraping cars.. " + new Date());
 			db.clearTable();
 			int count = Integer.valueOf(properties.getProperty("webharvest.count"));
 			String pageUrl = properties.getProperty("webharvest.url");
@@ -41,7 +39,7 @@ public class Main {
 				++dsNumber;
 			}
 		}
-		System.out.println("Finding similar cars...");
+		System.out.println("Finding similar cars..." + new Date());
 
 
 		for (Iterator<Car> it1 = db.iterator(); it1.hasNext(); ) {
@@ -56,12 +54,13 @@ public class Main {
 				}
 			}
 		}
-		System.out.println("Updating similars...");
+		System.out.println("Updating similars..." + new Date());
 		db.setSimilars(ds, map);
-		System.out.println("Creating output...(downloading images for pdf)...");
+		System.out.println("Creating output...(downloading images for pdf)..." + new Date());
 
 		WriterCar writer = (WriterCar) ctx.getBean("writerCar");
 		writer.create(db);
+		System.out.println("End time:" + new Date());
 
 	}
 }

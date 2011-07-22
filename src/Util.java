@@ -1,3 +1,7 @@
+import com.itextpdf.text.Image;
+import com.itextpdf.text.Jpeg;
+
+import java.net.URL;
 import java.util.Map;
 
 public class Util {
@@ -10,4 +14,16 @@ public class Util {
 		return null;
 	}
 
+	public static Image downloadImage(String imgUrl) {
+		Image image = null;
+		if (imgUrl == null)
+			return null;
+		try {
+			image = new Jpeg(new URL(imgUrl));
+
+		} catch (Exception exp) {
+			exp.printStackTrace();
+		}
+		return image;
+	}
 }

@@ -56,23 +56,10 @@ public class PDFWriterCar implements WriterCar {
 		document.close();
 	}
 
-	private Image downloadImage(String imgUrl) {
-
-		Image image = null;
-		if (imgUrl == null)
-			return null;
-		try {
-			image = new Jpeg(new URL(imgUrl));
-
-		} catch (Exception exp) {
-			exp.printStackTrace();
-		}
-		return image;
-	}
 
 	private Paragraph getCarParagraph(Car car) throws DocumentException {
 		Paragraph p = new Paragraph();
-		Image image = downloadImage(car.imgUrl);
+		Image image = Util.downloadImage(car.imgUrl);
 		p.add(image);
 		p.add(new Chunk("Id: ", BOLD));
 		p.add(new Chunk(car.carYandexId, NORMAL));
@@ -91,6 +78,14 @@ public class PDFWriterCar implements WriterCar {
 		if (car.engineCap != null) {
 			p.add(new Chunk("\nEngine capacity: ", BOLD));
 			p.add(new Chunk(car.engineCap.toString(), NORMAL));
+		}
+		if (car.colour != null) {
+			p.add(new Chunk("\nColour:", BOLD));
+			p.add(new Chunk(car.colour.toString(), NORMAL));
+		}
+		if (car.condition != null) {
+			p.add(new Chunk("\nCondition:", BOLD));
+			p.add(new Chunk(car.condition.toString(), NORMAL));
 		}
 		p.add(new Chunk("\nInfo: ", BOLD));
 		p.add(new Chunk(car.info, NORMAL));

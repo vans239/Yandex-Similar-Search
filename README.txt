@@ -49,6 +49,8 @@ dateSale Date,
 carYandexId VARCHAR(100) NOT NULL,
 image blob,
 similarCarYandexId VARCHAR(100),
+colour VARCHAR(100),
+conditionCar VARCHAR(100),
 PRIMARY KEY(carId),
 UNIQUE (carYandexId)
 ) DEFAULT CHARSET=utf8;

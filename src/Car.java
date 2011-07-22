@@ -13,11 +13,11 @@ public class Car {
 	String city;
 	Date date;
 	String similarCarYandexId;
-
-	String colour = null;
+	String colour;
+	String condition;
 
 	public Car(String carYandexId, String model, int year, int price, String imgUrl, String retailer,
-			   String info, Double engineCap, Integer mileage, String city, Date date, String colour, String similarCarYandexId) {
+			   String info, Double engineCap, Integer mileage, String city, Date date, String colour, String condition, String similarCarYandexId) {
 		this.carYandexId = carYandexId;
 		this.model = model;
 		this.year = year;
@@ -30,6 +30,7 @@ public class Car {
 		this.city = city;
 		this.date = date;
 		this.colour = colour;
+		this.condition = condition;
 		if (similarCarYandexId != null)
 			this.similarCarYandexId = similarCarYandexId;
 		else
@@ -37,8 +38,7 @@ public class Car {
 	}
 
 	public boolean isSimilar(Car car) {
-		if (this.year != car.year || !isModelSimilar(car) || !isEngineCapSimilar(car) || !this.city.equals(car.city)
-				|| !isColourSame(car))
+		if (this.year != car.year || !isModelSimilar(car) || !isEngineCapSimilar(car) || !this.city.equals(car.city))
 			return false;
 
 		if (isImgSimilar(car)) {
@@ -49,10 +49,16 @@ public class Car {
 		return false;
 	}
 
-	private boolean isColourSame(Car car) {
+	private boolean isColourSimilar(Car car) {
 		if (car.colour == null || colour == null)
 			return true;
 		return colour.equals(car.colour);
+	}
+
+	private boolean isConditionSimilar(Car car) {
+		if (car.condition == null || condition == null)
+			return true;
+		return condition.equals(car.condition);
 	}
 
 	private boolean isImgSimilar(Car car) {
@@ -118,6 +124,4 @@ public class Car {
 		str.append('\n');
 		return str.toString();
 	}
-
-
 }
