@@ -89,7 +89,7 @@ public class CarScraperYandex implements CarScraper {
 				if (!db.isExist(car.carYandexId))
 					db.addCar(car);
 			} catch (Exception e) {
-				e.printStackTrace();
+				log.error("Scraper error", e);
 			}
 		}
 		log.info("End: Scraping... ");

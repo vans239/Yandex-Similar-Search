@@ -55,10 +55,10 @@ public class Main {
 			while (rs1.next()) {
 				car1 = Database.getCar(rs1);
 				rs2.first();
+				int dsNumber1 = map.get(car1.carYandexId);
 				while (rs2.next()) {
 					car2 = Database.getCar(rs2);
 					if (!car1.carYandexId.equals(car2.carYandexId) && car1.isSimilar(car2)) {
-						int dsNumber1 = map.get(car1.carYandexId);
 						int dsNumber2 = map.get(car2.carYandexId);
 						ds.unite(dsNumber1, dsNumber2);
 						log.debug(car1.carYandexId + " " + car2.carYandexId);

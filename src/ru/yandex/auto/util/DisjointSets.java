@@ -26,6 +26,7 @@ public class DisjointSets {
 		int rootB = root(b);
 		if (rootA != rootB) {
 			p[rootB] = rootA;
+			//compression heuristics
 			p[a] = rootA;
 			p[b] = rootA;
 		}
