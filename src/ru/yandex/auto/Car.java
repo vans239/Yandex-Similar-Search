@@ -49,7 +49,7 @@ public class Car {
 		if (isImgSimilar(car)) {
 			return true;
 		}
-		if (diffDateDay(car) < 5 && (Math.abs(car.price - price) < 40000) && (getDiffMileage(car) < 40000))
+		if (diffDateDay(car) < 5 && (Math.abs(car.price - price) < 40000) && (getDiffMileage(car) < 5000))
 			return true;
 		return false;
 	}

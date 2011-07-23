@@ -1,6 +1,7 @@
 package ru.yandex.auto;
 
 import java.io.FileInputStream;
+import java.sql.ResultSet;
 import java.util.*;
 
 import org.apache.log4j.Logger;
@@ -45,18 +46,29 @@ public class Main {
 				++dsNumber;
 			}
 		}
-		log.info("Finding similars:");
-		for (Iterator<Car> it1 = db.iterator(); it1.hasNext(); ) {
-			Car car1 = it1.next();
-			for (Iterator<Car> it2 = db.iterator(); it2.hasNext(); ) {
-				Car car2 = it2.next();
-				if (!car1.carYandexId.equals(car2.carYandexId) && car1.isSimilar(car2)) {
-					int dsNumber1 = map.get(car1.carYandexId);
-					int dsNumber2 = map.get(car2.carYandexId);
-					ds.unite(dsNumber1, dsNumber2);
-					log.debug(car1.carYandexId + " " + car2.carYandexId);
+		{
+			log.info("Finding similars:");
+			ResultSet rs1 = db.getCars();
+			ResultSet rs2 = db.getCars();
+			Car car1 = null;
+			Car car2 = null;
+			while (rs1.next()) {
+				car1 = Database.getCar(rs1);
+				rs2.first();
+				while (rs2.next()) {
+					car2 = Database.getCar(rs2);
+					if (!car1.carYandexId.equals(car2.carYandexId) && car1.isSimilar(car2)) {
+						int dsNumber1 = map.get(car1.carYandexId);
+						int dsNumber2 = map.get(car2.carYandexId);
+						ds.unite(dsNumber1, dsNumber2);
+						log.debug(car1.carYandexId + " " + car2.carYandexId);
+					}
 				}
 			}
+			rs1.close();
+			rs2.close();
+			rs1 = null;
+			rs2 = null;
 		}
 
 		db.setSimilars(ds, map);

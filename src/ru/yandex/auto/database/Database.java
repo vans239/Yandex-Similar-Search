@@ -26,12 +26,26 @@ public class Database implements Iterable<Car> {
 		if (!con.isClosed())
 			log.info("Successfully connected to MySQL server using TCP/IP...");
 	}
-
+	public ResultSet getCars(){
+		ResultSet rs = null;
+		try {
+			Statement statement = con.createStatement(java.sql.ResultSet.TYPE_FORWARD_ONLY,
+					java.sql.ResultSet.CONCUR_UPDATABLE);
+			rs = statement.executeQuery("SELECT * FROM Car ORDER BY similarCarYandexId");
+		} catch (SQLException e) {
+			log.error("Something wrong with database", e);
+		}
+		return rs;
+	}
 	public Iterator<Car> iterator() {
 		ResultSet rs = null;
 		try {
-			Statement statement = con.createStatement();
+			log.debug("before:" + Runtime.getRuntime().freeMemory());
+			Statement statement = con.createStatement(java.sql.ResultSet.TYPE_FORWARD_ONLY,
+					java.sql.ResultSet.CONCUR_READ_ONLY);
+			statement.setFetchDirection(ResultSet.FETCH_FORWARD);
 			rs = statement.executeQuery("SELECT * FROM Car");
+			log.debug("after:" + Runtime.getRuntime().freeMemory());
 		} catch (SQLException e) {
 			log.error("Something wrong with database", e);
 		}
@@ -45,7 +59,7 @@ public class Database implements Iterable<Car> {
 					java.sql.ResultSet.CONCUR_UPDATABLE);
 			rs = statement.executeQuery("SELECT * FROM Car ORDER BY similarCarYandexId");
 		} catch (SQLException e) {
-			e.printStackTrace();
+			log.error("Something wrong with database", e);
 		}
 		return new DatabaseIterator(rs);
 	}
