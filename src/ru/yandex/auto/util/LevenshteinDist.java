@@ -27,9 +27,17 @@ public class LevenshteinDist {
 	}
 
 	public static void main(String argv[]) {
-		String a = "mercedes benz e-class";
-		String b = "mercedes benz e-320";
-		System.out.println(getDist(a, b));
+		String b = "Mercedes-Benz E-Класс";
+		String a = "Mercedes-Benz E-Klasse";
+		String str = a.substring(0, b.length());
+		/*
+			mercedes benz e-class  mercedes-benz e-220
+			mercedes benz e-superclass  mercedes-benz e-220
+		 */
+
 		System.out.println(a + " " + b);
+		System.out.println(LevenshteinDist.getDist(a, b) + "  " + Math.max(a.length(), b.length()) / 4
+				+ " " + LevenshteinDist.getDist(str, b) + " " + b.length() / 4);
+		System.out.println(getDist(a, b));
 	}
 }

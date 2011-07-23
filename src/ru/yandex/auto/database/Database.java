@@ -1,6 +1,7 @@
 package ru.yandex.auto.database;
 
 import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.log4j.Logger;
 import ru.yandex.auto.Car;
 import ru.yandex.auto.util.DisjointSets;
 import ru.yandex.auto.util.Util;
@@ -16,13 +17,14 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 
 public class Database implements Iterable<Car> {
+	private static Logger log = Logger.getLogger(Database.class);
 	private Connection con;
 
 	public Database(BasicDataSource bds) throws SQLException, ClassNotFoundException, IllegalAccessException, InstantiationException {
 		Class.forName(bds.getDriverClassName()).newInstance();
 		con = DriverManager.getConnection(bds.getUrl(), bds.getUsername(), bds.getPassword());
 		if (!con.isClosed())
-			System.out.println("Successfully connected to MySQL server using TCP/IP...");
+			log.info("Successfully connected to MySQL server using TCP/IP...");
 	}
 
 	public Iterator<Car> iterator() {
@@ -31,7 +33,7 @@ public class Database implements Iterable<Car> {
 			Statement statement = con.createStatement();
 			rs = statement.executeQuery("SELECT * FROM Car");
 		} catch (SQLException e) {
-			e.printStackTrace();
+			log.error("Something wrong with database", e);
 		}
 		return new DatabaseIterator(rs);
 	}
@@ -115,6 +117,7 @@ public class Database implements Iterable<Car> {
 	}
 
 	public void setSimilars(DisjointSets ds, Map<String, Integer> map) throws SQLException {
+		log.info("Start: Updating similars... ");
 		Statement statement = con.createStatement(java.sql.ResultSet.TYPE_FORWARD_ONLY,
 				java.sql.ResultSet.CONCUR_UPDATABLE);
 		String sqlRequest = "SELECT * FROM CAR;";
@@ -128,6 +131,7 @@ public class Database implements Iterable<Car> {
 			rs.updateString("similarCarYandexId", carYandexId);
 			rs.updateRow();
 		}
+		log.info("End: Updating similars... ");
 	}
 
 	public Car getCarByYandexId(String carYandexId) throws SQLException {

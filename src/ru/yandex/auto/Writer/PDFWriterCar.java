@@ -3,6 +3,7 @@ package ru.yandex.auto.writer;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.draw.LineSeparator;
+import org.apache.log4j.Logger;
 import ru.yandex.auto.Car;
 import ru.yandex.auto.database.Database;
 import ru.yandex.auto.util.Util;
@@ -13,6 +14,7 @@ import java.util.Iterator;
 import java.sql.SQLException;
 
 public class PDFWriterCar implements WriterCar {
+	private static Logger log = Logger.getLogger(PDFWriterCar.class);
 	private final static String FONT_LOCATION = "ARIAL.ttf";
 
 	private Font NORMAL;
@@ -38,6 +40,8 @@ public class PDFWriterCar implements WriterCar {
 
 	public void create(Database db)
 			throws DocumentException, IOException, SQLException {
+		log.info("Start: Creating output...(downloading images for pdf)... ");
+
 		Document document = new Document();
 		com.itextpdf.text.pdf.PdfWriter.getInstance(document, new
 				FileOutputStream(filename)
@@ -56,6 +60,7 @@ public class PDFWriterCar implements WriterCar {
 			document.add(getCarParagraph(car));
 		}
 		document.close();
+		log.info("End:Creating output...(downloading images for pdf)... ");
 	}
 
 

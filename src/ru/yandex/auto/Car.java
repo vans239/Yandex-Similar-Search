@@ -88,11 +88,11 @@ public class Car {
 			return car.isModelSimilar(this);
 		String str = car.model.substring(0, this.model.length());
 		/*
-			mercedes benz e-class  mercedes-benz e-220
-			mercedes benz e-superclass  mercedes-benz e-220
+			Mercedes-Benz E-Класс
+			Mercedes-Benz E-Klasse
 		 */
-		return LevenshteinDist.getDist(car.model, model) < Math.max(car.model.length(), model.length()) / 4
-				|| LevenshteinDist.getDist(str, model) < model.length() / 4;
+		return LevenshteinDist.getDist(car.model, model) <= Math.max(car.model.length(), model.length()) / 4
+				|| LevenshteinDist.getDist(str, model) <= model.length() / 4;
 	}
 
 	public int getDiffMileage(Car car) {

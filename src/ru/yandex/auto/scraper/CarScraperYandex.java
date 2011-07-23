@@ -9,6 +9,7 @@ import java.util.GregorianCalendar;
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 
+import org.apache.log4j.Logger;
 import org.webharvest.definition.ScraperConfiguration;
 import org.webharvest.runtime.Scraper;
 import org.webharvest.runtime.variables.Variable;
@@ -17,6 +18,7 @@ import ru.yandex.auto.Car;
 import ru.yandex.auto.database.Database;
 
 public class CarScraperYandex implements CarScraper {
+	private static Logger log = Logger.getLogger(CarScraperYandex.class);
 	private String config;
 	private String workDir;
 	private String proxy;
@@ -30,6 +32,7 @@ public class CarScraperYandex implements CarScraper {
 	}
 
 	public void scrape(String url, int count, Database db) throws Exception {
+		log.info("Start: Scraping... ");
 		int end = begin + count;
 		if (begin <= 0 || begin >= end) {
 			throw new Exception("Wrong begin or end");
@@ -89,6 +92,7 @@ public class CarScraperYandex implements CarScraper {
 				e.printStackTrace();
 			}
 		}
+		log.info("End: Scraping... ");
 	}
 
 	private static boolean isImgUrlValid(String imgUrl) {
