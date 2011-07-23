@@ -33,7 +33,7 @@ https://github.com/vans239/Yandex-Similar-Search
 
 Таблица вида:
 
-create table Car
+create table ru.yandex.auto.Car
 (
 carId int(11) not Null AUTO_INCREMENT,
 model varchar(100) NOT NULL,

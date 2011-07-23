@@ -24,14 +24,10 @@
             <value>${jdbc.password}</value>
         </property>
     </bean>
-    <bean id="database" class="Database">
+    <bean id="database" class="ru.yandex.auto.database.Database">
         <constructor-arg ref="myDataSource"/>
     </bean>
-    <bean id="count" class="java.lang.Integer">
-        <constructor-arg type="int" value="30"/>
-    </bean>
-
-    <bean id="carScraper" class="CarScraperYandex">
+    <bean id="carScraper" class="ru.yandex.auto.scraper.CarScraperYandex">
         <constructor-arg index="0" type="java.lang.String">
             <value>${webharvest.file}</value>
         </constructor-arg>
@@ -46,7 +42,7 @@
         </constructor-arg>
     </bean>
 
-    <bean id="writerCar" class="PDFWriterCar">
+    <bean id="writerCar" class="ru.yandex.auto.writer.PDFWriterCar">
         <property name="filename">
             <value>${writer.file}</value>
         </property>

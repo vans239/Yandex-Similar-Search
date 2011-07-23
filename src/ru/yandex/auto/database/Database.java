@@ -1,4 +1,9 @@
+package ru.yandex.auto.database;
+
 import org.apache.commons.dbcp.BasicDataSource;
+import ru.yandex.auto.Car;
+import ru.yandex.auto.util.DisjointSets;
+import ru.yandex.auto.util.Util;
 
 import java.util.Iterator;
 import java.util.Date;

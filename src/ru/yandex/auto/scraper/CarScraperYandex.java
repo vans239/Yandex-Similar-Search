@@ -1,4 +1,5 @@
-import java.net.URL;
+package ru.yandex.auto.scraper;
+
 import java.util.Date;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
@@ -12,11 +13,10 @@ import org.webharvest.definition.ScraperConfiguration;
 import org.webharvest.runtime.Scraper;
 import org.webharvest.runtime.variables.Variable;
 
-import com.itextpdf.text.Image;
-import com.itextpdf.text.Jpeg;
+import ru.yandex.auto.Car;
+import ru.yandex.auto.database.Database;
 
 public class CarScraperYandex implements CarScraper {
-	//public static String url = "http://auto.yandex.ru/search.xml?cluster_id=";
 	private String config;
 	private String workDir;
 	private String proxy;

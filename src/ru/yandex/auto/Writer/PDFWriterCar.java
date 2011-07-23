@@ -1,13 +1,15 @@
+package ru.yandex.auto.writer;
+
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.draw.LineSeparator;
+import ru.yandex.auto.Car;
+import ru.yandex.auto.database.Database;
+import ru.yandex.auto.util.Util;
 
 import java.io.IOException;
 import java.io.FileOutputStream;
-import java.net.URL;
-import java.util.Map;
 import java.util.Iterator;
-import java.util.List;
 import java.sql.SQLException;
 
 public class PDFWriterCar implements WriterCar {

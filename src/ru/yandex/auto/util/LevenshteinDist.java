@@ -1,3 +1,5 @@
+package ru.yandex.auto.util;
+
 public class LevenshteinDist {
 	public static int getDist(String a, String b) {
 		a = a.replaceAll("[, '\\u00A0''\\u2007''\\u202F'-]", "");

@@ -1,3 +1,5 @@
+package ru.yandex.auto.util;
+
 import com.itextpdf.text.Image;
 import com.itextpdf.text.Jpeg;
 

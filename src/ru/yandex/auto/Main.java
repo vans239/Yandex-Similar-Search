@@ -1,12 +1,14 @@
+package ru.yandex.auto;
+
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.*;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
-import sun.nio.cs.UTF_32LE;
-
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
+import ru.yandex.auto.writer.WriterCar;
+import ru.yandex.auto.database.Database;
+import ru.yandex.auto.scraper.CarScraper;
+import ru.yandex.auto.util.DisjointSets;
 
 public class Main {
 	public static void main(String argv[]) throws Exception {
@@ -67,12 +69,12 @@ public class Main {
 //storing  image in database
 
 
-// SELECT carYandexId, similarCarYandexId, model, year, price, mileage, datesale, engineCap From Car ORDER by similarCarYandexId;
+// SELECT carYandexId, similarCarYandexId, model, year, price, mileage, datesale, engineCap From ru.yandex.auto.Car ORDER by similarCarYandexId;
 /*
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-  <class name="Car" table="HibernateCar">
+  <class name="ru.yandex.auto.Car" table="HibernateCar">
     <id name="carYandexId" column="carYandexId"/>
     <property name="model" />
     <property name="year" />

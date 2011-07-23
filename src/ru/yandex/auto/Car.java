@@ -1,20 +1,24 @@
+package ru.yandex.auto;
+
+import ru.yandex.auto.util.LevenshteinDist;
+
 import java.util.Date;
 
 public class Car {
-	String carYandexId;
-	String model;
-	int year;
-	int price;
-	Integer mileage = null;
-	Double engineCap = null;
-	String info;
-	String imgUrl;
-	String retailer;
-	String city;
-	Date date;
-	String similarCarYandexId;
-	String colour;
-	String condition;
+	public String carYandexId;
+	public String model;
+	public int year;
+	public int price;
+	public Integer mileage = null;
+	public Double engineCap = null;
+	public String info;
+	public String imgUrl;
+	public String retailer;
+	public String city;
+	public Date date;
+	public String similarCarYandexId;
+	public String colour;
+	public String condition;
 
 	public Car(String carYandexId, String model, int year, int price, String imgUrl, String retailer,
 			   String info, Double engineCap, Integer mileage, String city, Date date, String colour, String condition, String similarCarYandexId) {
@@ -87,8 +91,7 @@ public class Car {
 			mercedes benz e-class  mercedes-benz e-220
 			mercedes benz e-superclass  mercedes-benz e-220
 		 */
-		return str.equals(model)
-				|| LevenshteinDist.getDist(car.model, model) < Math.max(car.model.length(), model.length()) / 4
+		return LevenshteinDist.getDist(car.model, model) < Math.max(car.model.length(), model.length()) / 4
 				|| LevenshteinDist.getDist(str, model) < model.length() / 4;
 	}
 
