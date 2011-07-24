@@ -26,6 +26,7 @@ public class Metrics {
 	public static double getDistanceEngineCap(Double a, Double b) {
 		if (a == null || b == null)
 			return 0.5;
+
 		if (a.equals(b))
 			return 0.0;
 		// for stupid people, who wrote different capacity for one car
@@ -35,6 +36,10 @@ public class Metrics {
 	public static double getDistanceMileage(Integer a, Integer b) {
 		if (a == null || b == null)
 			return 0.5;
+		if (a < 1000)
+			a *= 1000;
+		if (b < 1000)
+			b *= 1000;
 		if (a.equals(b))
 			return 0.0;
 		if (Math.abs(a - b) < 5000)

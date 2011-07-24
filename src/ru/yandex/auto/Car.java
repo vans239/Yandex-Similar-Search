@@ -42,73 +42,7 @@ public class Car {
 	}
 
 	public boolean isSimilar(Car car) {
-		/*if (this.year != car.year || !isModelSimilar(car) || !isEngineCapSimilar(car) || !this.city.equals(car.city)
-				|| !isColourSimilar(car) || !isConditionSimilar(car))
-			return false;
-
-		if (isImgSimilar(car)) {
-			return true;
-		}
-		if (diffDateDay(car) < 5 && (Math.abs(car.price - price) < 40000) && (getDiffMileage(car) < 5000))
-			return true;
-		return false;*/
 		return Metrics.getDistance(this, car) < 1.0;
-	}
-
-	private boolean isColourSimilar(Car car) {
-		if (car.colour == null || colour == null)
-			return true;
-		return colour.equals(car.colour);
-	}
-
-	private boolean isConditionSimilar(Car car) {
-		if (car.condition == null || condition == null)
-			return true;
-		return condition.equals(car.condition);
-	}
-
-	private boolean isImgSimilar(Car car) {
-		if (this.imgUrl == null || car.imgUrl == null)
-			return false;
-		if (this.imgUrl.equals(car.imgUrl))
-			return true;
-		//opencv will be here))
-		return false;
-	}
-
-	private long diffDateDay(Car car) {
-		if (this.date == null || car.date == null)
-			return 0;
-		long diff = this.date.getTime() - car.date.getTime();
-		final long day = 24 * 60 * 60 * 1000;
-		return diff / day;
-	}
-
-	private boolean isModelSimilar(Car car) {
-		if (this.model.length() > car.model.length())
-			return car.isModelSimilar(this);
-		String str = car.model.substring(0, this.model.length());
-		/*
-			Mercedes-Benz E-Класс
-			Mercedes-Benz E-Klasse
-		 */
-		return LevenshteinDist.getDist(car.model, model) <= Math.max(car.model.length(), model.length()) / 4
-				|| LevenshteinDist.getDist(str, model) <= model.length() / 4;
-	}
-
-	public int getDiffMileage(Car car) {
-		if (car.mileage == null || mileage == null)
-			return 0;
-		// error in advertisment 130000 130
-		if (car.mileage < 1000)
-			car.mileage *= 1000;
-		if (mileage < 1000)
-			mileage *= 1000;
-		return Math.abs(car.mileage - mileage);
-	}
-
-	private boolean isEngineCapSimilar(Car car) {
-		return car.engineCap == null || this.engineCap == null || car.engineCap.equals(this.engineCap);
 	}
 
 	public String toString() {
