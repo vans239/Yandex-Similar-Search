@@ -16,19 +16,20 @@ public class DisjointSets {
 	}
 
 	public int root(int x) {
-		while (x != p[x])
-			x = p[x];
-		return x;
+		//compression heuristics
+		if (x != p[x])
+			p[x] = root(p[x]);
+		return p[x];
 	}
 
 	public void unite(int a, int b) {
 		int rootA = root(a);
 		int rootB = root(b);
-		if (rootA != rootB) {
+		// rank heuristics
+		if (random.nextInt() % 2 == 0) {
 			p[rootB] = rootA;
-			//compression heuristics
-			p[a] = rootA;
-			p[b] = rootA;
+		} else {
+			p[rootA] = rootB;
 		}
 	}
 }

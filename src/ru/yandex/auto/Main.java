@@ -79,7 +79,7 @@ public class Main {
 }
 //storing  image in database
 
-
+//heuristics
 // SELECT carYandexId, similarCarYandexId, model, year, price, mileage, datesale, engineCap From ru.yandex.auto.Car ORDER by similarCarYandexId;
 /*
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
