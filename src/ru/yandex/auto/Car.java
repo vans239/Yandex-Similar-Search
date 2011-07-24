@@ -42,7 +42,7 @@ public class Car {
 	}
 
 	public boolean isSimilar(Car car) {
-		if (this.year != car.year || !isModelSimilar(car) || !isEngineCapSimilar(car) || !this.city.equals(car.city)
+		/*if (this.year != car.year || !isModelSimilar(car) || !isEngineCapSimilar(car) || !this.city.equals(car.city)
 				|| !isColourSimilar(car) || !isConditionSimilar(car))
 			return false;
 
@@ -51,7 +51,8 @@ public class Car {
 		}
 		if (diffDateDay(car) < 5 && (Math.abs(car.price - price) < 40000) && (getDiffMileage(car) < 5000))
 			return true;
-		return false;
+		return false;*/
+		return Metrics.getDistance(this, car) < 1.0;
 	}
 
 	private boolean isColourSimilar(Car car) {
