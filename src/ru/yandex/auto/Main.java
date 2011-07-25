@@ -79,26 +79,5 @@ public class Main {
 }
 //storing  image in database
 
-//heuristics
-// SELECT carYandexId, similarCarYandexId, model, year, price, mileage, datesale, engineCap From ru.yandex.auto.Car ORDER by similarCarYandexId;
-/*
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<hibernate-mapping>
-  <class name="ru.yandex.auto.Car" table="HibernateCar">
-    <id name="carYandexId" column="carYandexId"/>
-    <property name="model" />
-    <property name="year" />
-    <property name="price" />
-    <property name="mileage" />
-    <property name="engineCap" />
-    <property name="info" />
-    <property name="imgUrl" />
-    <property name="retailer" />
-    <property name="city" />
-    <property name="date" />
-    <property name="similarCarYandexId"/>
-  </class>
- 
-</hibernate-mapping>
-*/
+// SELECT carYandexId, similarCarYandexId, model, year, price, mileage, datesale, engineCap From Car ORDER by similarCarYandexId;
+
