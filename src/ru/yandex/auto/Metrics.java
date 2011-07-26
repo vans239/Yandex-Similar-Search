@@ -29,7 +29,7 @@ public class Metrics {
 		if (Math.abs(a - b) < 10000)
 			return 0.2;
 		if (Math.abs(a - b) < 40000)
-			return 0.3;
+			return 0.4;
 		return 0.5;
 	}
 
@@ -39,11 +39,12 @@ public class Metrics {
 
 		if (a.equals(b))
 			return 0.0;
-		// for stupid people, who wrote different capacity for one car
+
 		return 0.6;
 	}
 
 	public static double getDistanceMileage(Integer a, Integer b) {
+		//    mileage = price
 		if (a == null || b == null)
 			return 0.5;
 		if (a < 1000)
@@ -55,7 +56,7 @@ public class Metrics {
 		if (Math.abs(a - b) < 5000)
 			return 0.2;
 		if (Math.abs(a - b) < 20000)
-			return 0.3;
+			return 0.4;
 		return 0.5;
 	}
 
@@ -76,7 +77,7 @@ public class Metrics {
 			return 0.1;
 		if (a.equals(b))
 			return 0.0;
-		return 0.7;
+		return 0.6;
 	}
 
 	public static double getDistanceCondition(String a, String b) {
@@ -111,7 +112,7 @@ public class Metrics {
 			return 0.2;
 		if (a.equals(b))
 			return 0.0;
-		return 1.0;
+		return 0.7;
 	}
 }
 // logging!!!

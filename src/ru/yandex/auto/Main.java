@@ -54,7 +54,7 @@ public class Main {
 			Car car2 = null;
 			while (rs1.next()) {
 				car1 = Database.getCar(rs1);
-				rs2.first();
+				rs2.absolute(rs1.getRow());
 				int dsNumber1 = map.get(car1.carYandexId);
 				while (rs2.next()) {
 					car2 = Database.getCar(rs2);
@@ -81,3 +81,8 @@ public class Main {
 
 // SELECT carYandexId, similarCarYandexId, model, year, price, mileage, datesale, engineCap From Car ORDER by similarCarYandexId;
 
+//check car-ad-79697272
+
+//  25
+//   24
+// 49
