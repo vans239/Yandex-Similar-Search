@@ -1,6 +1,8 @@
 package ru.yandex.auto.scraper;
 
+import java.io.FileNotFoundException;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.util.Calendar;
@@ -31,11 +33,11 @@ public class CarScraperYandex implements CarScraper {
 		this.begin = begin;
 	}
 
-	public void scrape(String url, int count, Database db) throws Exception {
+	public void scrape(String url, int count, Database db) throws FileNotFoundException {
 		log.info("Start: Scraping... ");
 		int end = begin + count;
-		if (begin <= 0 || begin >= end) {
-			throw new Exception("Wrong begin or end");
+		if (begin <= 0 || count <= 0) {
+			throw new IllegalArgumentException("Wrong begin or count");
 		}
 
 		ScraperConfiguration config =

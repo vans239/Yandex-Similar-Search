@@ -7,7 +7,7 @@ import java.util.Date;
 public class Metrics {
 	public static double getDistance(Car a, Car b) {
 		return getDistanceYear(a.year, b.year)
-				+ getDistanceMileage(a.mileage, b.mileage)
+				+ getDistanceMileage(a, b)
 				+ getDistanceEngineCap(a.engineCap, b.engineCap)
 				+ getDistanceDate(a.date, b.date)
 				+ getDistanceColour(a.colour, b.colour)
@@ -43,19 +43,21 @@ public class Metrics {
 		return 0.6;
 	}
 
-	public static double getDistanceMileage(Integer a, Integer b) {
-		//    mileage = price
-		if (a == null || b == null)
+	public static double getDistanceMileage(Car a, Car b) {
+		//    mileage == price
+		if (a.mileage == null || b.mileage == null)
 			return 0.5;
-		if (a < 1000)
-			a *= 1000;
-		if (b < 1000)
-			b *= 1000;
-		if (a.equals(b))
-			return 0.0;
-		if (Math.abs(a - b) < 5000)
+		if (a.mileage == a.price || b.mileage == b.price)
 			return 0.2;
-		if (Math.abs(a - b) < 20000)
+		if (a.mileage < 1000)
+			a.mileage *= 1000;
+		if (b.mileage < 1000)
+			b.mileage *= 1000;
+		if (a.mileage.equals(b.mileage))
+			return 0.0;
+		if (Math.abs(a.mileage - b.mileage) < 5000)
+			return 0.2;
+		if (Math.abs(a.mileage - b.mileage) < 20000)
 			return 0.4;
 		return 0.5;
 	}
